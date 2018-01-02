@@ -187,8 +187,15 @@ SWIFT_MODULE_NAMESPACE_PUSH("AVSwift")
 
 SWIFT_CLASS("_TtC7AVSwift14AVQueryBuilder")
 @interface AVQueryBuilder : NSObject
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
+@end
+
+
+SWIFT_CLASS("_TtC7AVSwift35AVHistoricalStockPricesQueryBuilder")
+@interface AVHistoricalStockPricesQueryBuilder : AVQueryBuilder
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
+
 
 SWIFT_MODULE_NAMESPACE_POP
 #pragma clang diagnostic pop

@@ -12,18 +12,18 @@
 		0144102D1FFB045600B5675B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0144102B1FFB045600B5675B /* Main.storyboard */; };
 		0144102F1FFB045600B5675B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0144102E1FFB045600B5675B /* Assets.xcassets */; };
 		014410321FFB045600B5675B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 014410301FFB045600B5675B /* LaunchScreen.storyboard */; };
-		0144104D1FFB560800B5675B /* AVSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0144104C1FFB560800B5675B /* AVSwift.framework */; };
-		0144104E1FFB560800B5675B /* AVSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0144104C1FFB560800B5675B /* AVSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		014410511FFC0EC100B5675B /* AVSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0144104C1FFB560800B5675B /* AVSwift.framework */; };
+		014410521FFC0EC100B5675B /* AVSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0144104C1FFB560800B5675B /* AVSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		0144104B1FFB54EF00B5675B /* Embed Frameworks */ = {
+		014410531FFC0EC100B5675B /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				0144104E1FFB560800B5675B /* AVSwift.framework in Embed Frameworks */,
+				014410521FFC0EC100B5675B /* AVSwift.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -46,7 +46,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0144104D1FFB560800B5675B /* AVSwift.framework in Frameworks */,
+				014410511FFC0EC100B5675B /* AVSwift.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -93,7 +93,7 @@
 				014410201FFB045600B5675B /* Sources */,
 				014410211FFB045600B5675B /* Frameworks */,
 				014410221FFB045600B5675B /* Resources */,
-				0144104B1FFB54EF00B5675B /* Embed Frameworks */,
+				014410531FFC0EC100B5675B /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
