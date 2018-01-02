@@ -12,6 +12,7 @@
 		014410121FFB039700B5675B /* AVSwift.h in Headers */ = {isa = PBXBuildFile; fileRef = 014410041FFB039700B5675B /* AVSwift.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		014410441FFB538700B5675B /* AVQueryBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 014410431FFB538700B5675B /* AVQueryBuilder.swift */; };
 		014410451FFB53E600B5675B /* AVSwiftTests.xctest in Resources */ = {isa = PBXBuildFile; fileRef = 0144100A1FFB039700B5675B /* AVSwiftTests.xctest */; };
+		014410501FFC0B6400B5675B /* AVHistoricalStockPricesQueryBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0144104F1FFC0B6400B5675B /* AVHistoricalStockPricesQueryBuilder.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -32,6 +33,7 @@
 		0144100F1FFB039700B5675B /* AVSwiftTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVSwiftTests.swift; sourceTree = "<group>"; };
 		014410111FFB039700B5675B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		014410431FFB538700B5675B /* AVQueryBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVQueryBuilder.swift; sourceTree = "<group>"; };
+		0144104F1FFC0B6400B5675B /* AVHistoricalStockPricesQueryBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVHistoricalStockPricesQueryBuilder.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,6 +79,7 @@
 				014410041FFB039700B5675B /* AVSwift.h */,
 				014410051FFB039700B5675B /* Info.plist */,
 				014410431FFB538700B5675B /* AVQueryBuilder.swift */,
+				0144104F1FFC0B6400B5675B /* AVHistoricalStockPricesQueryBuilder.swift */,
 			);
 			path = AVSwift;
 			sourceTree = "<group>";
@@ -202,6 +205,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				014410501FFC0B6400B5675B /* AVHistoricalStockPricesQueryBuilder.swift in Sources */,
 				014410441FFB538700B5675B /* AVQueryBuilder.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

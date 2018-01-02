@@ -4,9 +4,13 @@
 <dict>
 	<key>files</key>
 	<dict>
+		<key>.DS_Store</key>
+		<data>
+		19/J0uDkHRMF8ttRaWoAL8VEkVc=
+		</data>
 		<key>Headers/AVSwift-Swift.h</key>
 		<data>
-		MQ5bbE3iH8etlj9hJnZsiG0M8PQ=
+		6S81aHSJpj7XpxXSEw0UIvgMe20=
 		</data>
 		<key>Headers/AVSwift.h</key>
 		<data>
@@ -16,13 +20,17 @@
 		<data>
 		EoTb9Z1x/ev3TGrgxxM81Zg2dkI=
 		</data>
+		<key>Modules/.DS_Store</key>
+		<data>
+		erTdGco+oifgtlsHYljVidSFWJE=
+		</data>
 		<key>Modules/AVSwift.swiftmodule/x86_64.swiftdoc</key>
 		<data>
 		DRoJa5e4oKQAvu0aXumhkpYbX0w=
 		</data>
 		<key>Modules/AVSwift.swiftmodule/x86_64.swiftmodule</key>
 		<data>
-		8EV/U7ABXZNUv1+aMjJa/nJZFmw=
+		Agm+3W357efD0l2bYhdK6OnU794=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -35,11 +43,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			MQ5bbE3iH8etlj9hJnZsiG0M8PQ=
+			6S81aHSJpj7XpxXSEw0UIvgMe20=
 			</data>
 			<key>hash2</key>
 			<data>
-			iNrOgIuBIUEj4uEAxptGgZKbfN12UCq86JGn0cPRnNQ=
+			5tRRn+BI4cfSXgNR9GNZ3mp4ZTq6J1Io/qYsHwqaJOo=
 			</data>
 		</dict>
 		<key>Headers/AVSwift.h</key>
@@ -68,11 +76,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			8EV/U7ABXZNUv1+aMjJa/nJZFmw=
+			Agm+3W357efD0l2bYhdK6OnU794=
 			</data>
 			<key>hash2</key>
 			<data>
-			pBGxeYx+11HEIBG3oQaMjHHBqNGBNDVC+keVUwcU/1Q=
+			yHRm8UhYqwd9m0TV6KY8GdQGN2VAK+zwwIsK0Jh2dEU=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>
