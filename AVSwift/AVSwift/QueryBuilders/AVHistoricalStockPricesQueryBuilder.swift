@@ -23,3 +23,17 @@ public class AVHistoricalStockPricesQueryBuilder: AVQueryBuilder {
   }
   
 }
+
+extension AVHistoricalStockPricesQueryBuilder: AVQueryBuilderProtocol {
+  typealias Builder = AVHistoricalStockPricesQueryBuilder
+  public typealias DataFetcher = AVHistoricalStockDataFetcher
+  
+  public func build() -> DataFetcher {
+    return AVHistoricalStockDataFetcher(url: NSURL(string: "test")!)
+  }
+  
+  public func buildURL() -> URL {
+    let url = super.buildBaseURL()
+    return url
+  }
+}
