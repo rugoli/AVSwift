@@ -7,17 +7,16 @@
 //
 
 import UIKit
-import AVSwift
 
 class ViewController: UIViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
-    let testBuilder = AVHistoricalStockPricesQueryBuilder()
+    var testBuilder = AVHistoricalStockPricesQueryBuilder()
     testBuilder
       .setSymbol("MSFT")
       .setOuputSize(.full)
-      .setDataOutputType(.parsed)
+      .setDataOutputType(.raw)
     print(testBuilder)
     // Do any additional setup after loading the view, typically from a nib.
   }

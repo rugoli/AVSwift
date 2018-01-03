@@ -28,13 +28,7 @@ public class AVQueryBuilder: NSObject {
     super.init()
   }
   
-  public func setOuputSize<Builder: AVQueryBuilder>(_ outputSize: AVOutputSize) -> Builder {
-    self.outputSize = outputSize
-    return self as! Builder
-  }
-  
-  public func setDataOutputType<Builder: AVQueryBuilder>(_ outputType: AVOutputDataType) -> Builder {
-    self.dataOutputType = outputType
-    return self as! Builder
+  public func buildBaseURL() -> URL {
+    return URL(string: "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&outputsize=\(self.outputSize.rawValue)&datatype=json")!
   }
 }

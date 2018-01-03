@@ -13,6 +13,9 @@
 		014410441FFB538700B5675B /* AVQueryBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 014410431FFB538700B5675B /* AVQueryBuilder.swift */; };
 		014410451FFB53E600B5675B /* AVSwiftTests.xctest in Resources */ = {isa = PBXBuildFile; fileRef = 0144100A1FFB039700B5675B /* AVSwiftTests.xctest */; };
 		014410501FFC0B6400B5675B /* AVHistoricalStockPricesQueryBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0144104F1FFC0B6400B5675B /* AVHistoricalStockPricesQueryBuilder.swift */; };
+		014410591FFC518E00B5675B /* AVStockDataFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 014410581FFC518E00B5675B /* AVStockDataFetcher.swift */; };
+		0144105B1FFC51A700B5675B /* AVHistoricalStockDataFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0144105A1FFC51A700B5675B /* AVHistoricalStockDataFetcher.swift */; };
+		0144105D1FFC54AB00B5675B /* AVQueryBuilderCommon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0144105C1FFC54AB00B5675B /* AVQueryBuilderCommon.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,6 +37,9 @@
 		014410111FFB039700B5675B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		014410431FFB538700B5675B /* AVQueryBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVQueryBuilder.swift; sourceTree = "<group>"; };
 		0144104F1FFC0B6400B5675B /* AVHistoricalStockPricesQueryBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVHistoricalStockPricesQueryBuilder.swift; sourceTree = "<group>"; };
+		014410581FFC518E00B5675B /* AVStockDataFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AVStockDataFetcher.swift; path = AVSwift/DataFetchers/AVStockDataFetcher.swift; sourceTree = SOURCE_ROOT; };
+		0144105A1FFC51A700B5675B /* AVHistoricalStockDataFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AVHistoricalStockDataFetcher.swift; path = AVSwift/DataFetchers/AVHistoricalStockDataFetcher.swift; sourceTree = SOURCE_ROOT; };
+		0144105C1FFC54AB00B5675B /* AVQueryBuilderCommon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVQueryBuilderCommon.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -76,10 +82,10 @@
 		014410031FFB039700B5675B /* AVSwift */ = {
 			isa = PBXGroup;
 			children = (
-				014410041FFB039700B5675B /* AVSwift.h */,
 				014410051FFB039700B5675B /* Info.plist */,
-				014410431FFB538700B5675B /* AVQueryBuilder.swift */,
-				0144104F1FFC0B6400B5675B /* AVHistoricalStockPricesQueryBuilder.swift */,
+				014410571FFC50D400B5675B /* QueryBuilders */,
+				014410561FFC50C300B5675B /* DataFetchers */,
+				014410041FFB039700B5675B /* AVSwift.h */,
 			);
 			path = AVSwift;
 			sourceTree = "<group>";
@@ -91,6 +97,26 @@
 				014410111FFB039700B5675B /* Info.plist */,
 			);
 			path = AVSwiftTests;
+			sourceTree = "<group>";
+		};
+		014410561FFC50C300B5675B /* DataFetchers */ = {
+			isa = PBXGroup;
+			children = (
+				0144105A1FFC51A700B5675B /* AVHistoricalStockDataFetcher.swift */,
+				014410581FFC518E00B5675B /* AVStockDataFetcher.swift */,
+			);
+			name = DataFetchers;
+			path = "New Group";
+			sourceTree = "<group>";
+		};
+		014410571FFC50D400B5675B /* QueryBuilders */ = {
+			isa = PBXGroup;
+			children = (
+				014410431FFB538700B5675B /* AVQueryBuilder.swift */,
+				0144105C1FFC54AB00B5675B /* AVQueryBuilderCommon.swift */,
+				0144104F1FFC0B6400B5675B /* AVHistoricalStockPricesQueryBuilder.swift */,
+			);
+			path = QueryBuilders;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -205,6 +231,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				014410591FFC518E00B5675B /* AVStockDataFetcher.swift in Sources */,
+				0144105D1FFC54AB00B5675B /* AVQueryBuilderCommon.swift in Sources */,
+				0144105B1FFC51A700B5675B /* AVHistoricalStockDataFetcher.swift in Sources */,
 				014410501FFC0B6400B5675B /* AVHistoricalStockPricesQueryBuilder.swift in Sources */,
 				014410441FFB538700B5675B /* AVQueryBuilder.swift in Sources */,
 			);
