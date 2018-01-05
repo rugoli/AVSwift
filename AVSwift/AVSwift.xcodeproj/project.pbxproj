@@ -7,26 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0144100B1FFB039700B5675B /* AVSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 014410011FFB039700B5675B /* AVSwift.framework */; };
 		014410101FFB039700B5675B /* AVSwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0144100F1FFB039700B5675B /* AVSwiftTests.swift */; };
 		014410121FFB039700B5675B /* AVSwift.h in Headers */ = {isa = PBXBuildFile; fileRef = 014410041FFB039700B5675B /* AVSwift.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		014410441FFB538700B5675B /* AVQueryBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 014410431FFB538700B5675B /* AVQueryBuilder.swift */; };
-		014410451FFB53E600B5675B /* AVSwiftTests.xctest in Resources */ = {isa = PBXBuildFile; fileRef = 0144100A1FFB039700B5675B /* AVSwiftTests.xctest */; };
 		014410501FFC0B6400B5675B /* AVHistoricalStockPricesQueryBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0144104F1FFC0B6400B5675B /* AVHistoricalStockPricesQueryBuilder.swift */; };
 		014410591FFC518E00B5675B /* AVStockDataFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 014410581FFC518E00B5675B /* AVStockDataFetcher.swift */; };
 		0144105B1FFC51A700B5675B /* AVHistoricalStockDataFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0144105A1FFC51A700B5675B /* AVHistoricalStockDataFetcher.swift */; };
 		0144105D1FFC54AB00B5675B /* AVQueryBuilderCommon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0144105C1FFC54AB00B5675B /* AVQueryBuilderCommon.swift */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		0144100C1FFB039700B5675B /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 01440FF81FFB039700B5675B /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 014410001FFB039700B5675B;
-			remoteInfo = AVSwift;
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		014410011FFB039700B5675B /* AVSwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AVSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -54,7 +42,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0144100B1FFB039700B5675B /* AVSwift.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -162,7 +149,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				0144100D1FFB039700B5675B /* PBXTargetDependency */,
 			);
 			name = AVSwiftTests;
 			productName = AVSwiftTests;
@@ -220,7 +206,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				014410451FFB53E600B5675B /* AVSwiftTests.xctest in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -248,14 +233,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		0144100D1FFB039700B5675B /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 014410001FFB039700B5675B /* AVSwift */;
-			targetProxy = 0144100C1FFB039700B5675B /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		014410131FFB039700B5675B /* Debug */ = {
@@ -405,6 +382,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_TESTABILITY = YES;
 				INFOPLIST_FILE = AVSwift/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -422,6 +400,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = Y3QN5VQT38;
+				ENABLE_TESTABILITY = YES;
 				INFOPLIST_FILE = AVSwiftTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.roshan.AVSwiftTests;
@@ -437,6 +416,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = Y3QN5VQT38;
+				ENABLE_TESTABILITY = YES;
 				INFOPLIST_FILE = AVSwiftTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.roshan.AVSwiftTests;
