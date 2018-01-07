@@ -13,22 +13,22 @@ public enum AVOutputSize: String {
   case full = "full"
 }
 
-public enum AVOutputDataType {
-  case raw, parsed
-}
-
 public class AVQueryBuilder: NSObject {
   var outputSize: AVOutputSize
-  var dataOutputType: AVOutputDataType
   
   override init() {
     outputSize = .compact
-    dataOutputType = .parsed
     
     super.init()
   }
   
   public func buildBaseURL() -> URL {
-    return URL(string: "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&outputsize=\(self.outputSize.rawValue)&datatype=json")!
+    return URL(string: "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=MSFT&outputsize=full&apikey=demo")!
+//    return URL(string: "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&outputsize=\(self.outputSize.rawValue)&datatype=json")!
+  }
+  
+  public func setOuputSize(_ outputSize: AVOutputSize) -> Self {
+    self.outputSize = outputSize
+    return self
   }
 }

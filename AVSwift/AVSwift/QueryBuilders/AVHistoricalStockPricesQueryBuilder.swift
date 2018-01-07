@@ -8,8 +8,13 @@
 
 import UIKit
 
-public class AVHistoricalStockPricesQueryBuilder: AVQueryBuilder {
+public class AVHistoricalStockPricesQueryBuilder<PriceType: NSObject>: AVQueryBuilder {
+  public typealias Normal = AVHistoricalStockPriceModel
   var symbol: String?
+  
+  public class func builder() -> AVHistoricalStockPricesQueryBuilder<Normal> {
+    return AVHistoricalStockPricesQueryBuilder<Normal>()
+  }
   
   override public init() {
     symbol = nil
@@ -25,11 +30,10 @@ public class AVHistoricalStockPricesQueryBuilder: AVQueryBuilder {
 }
 
 extension AVHistoricalStockPricesQueryBuilder: AVQueryBuilderProtocol {
-  typealias Builder = AVHistoricalStockPricesQueryBuilder
-  public typealias DataFetcher = AVHistoricalStockDataFetcher
+  typealias ModelType = PriceType
   
-  public func build() -> DataFetcher {
-    return AVHistoricalStockDataFetcher(url: NSURL(string: "test")!)
+  public func build() -> AVStockDataFetcher<PriceType> {
+    return AVStockDataFetcher<PriceType>(url: self.buildURL())
   }
   
   public func buildURL() -> URL {
