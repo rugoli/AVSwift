@@ -11,7 +11,7 @@ import Foundation
 
 fileprivate let metadataKey: String = "Metadata"
 
-public class AVStockDataFetcher<ModelType: NSObject>: NSObject {
+public class AVStockDataFetcher<ModelType: NSObject & Decodable>: NSObject {
   let url: URL
   
   public init(url: URL) {
@@ -20,7 +20,7 @@ public class AVStockDataFetcher<ModelType: NSObject>: NSObject {
     super.init()
   }
   
-  public func getResults(completion: ([ModelType]) -> Void) {
+  public func getResults(completion: ([ModelType]?, Error?) -> Void) {
     do {
       let data = try Data.init(contentsOf: url)
       let json = try JSONSerialization.jsonObject(with: data, options: .mutableLeaves) as! [String: Any]
@@ -37,10 +37,20 @@ public class AVStockDataFetcher<ModelType: NSObject>: NSObject {
         return
       }
       let timeSeries: [String: [String: String]] = json[timeSeriesKey]! as! [String : [String: String]]
-      print(timeSeries)
-      print(timeSeries)
+      let parsed: [ModelType] = timeSeries.flatMap({ key, value in
+        var mutableDict = value
+        mutableDict["date"] = key
+        do {
+          let element = try JSONDecoder().decode(ModelType.self, from: JSONSerialization.data(withJSONObject: mutableDict, options: .prettyPrinted))
+          return element
+        } catch {
+          completion(nil, error)
+        }
+        return nil
+      })
+      completion(parsed, nil)
     } catch {
-      
+      completion(nil, error)
     }
   }
   
