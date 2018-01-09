@@ -8,15 +8,14 @@
 
 import UIKit
 
-public class AVHistoricalStockPricesQueryBuilder<PriceType: NSObject>: AVQueryBuilder {
-  public typealias Normal = AVHistoricalStockPriceModel
+public func AVHistoricalStockPricesBuilder() -> AVHistoricalStockPricesQueryBuilder<AVHistoricalStockPriceModel> {
+  return AVHistoricalStockPricesQueryBuilder<AVHistoricalStockPriceModel>()
+}
+
+public class AVHistoricalStockPricesQueryBuilder<PriceType: NSObject & Decodable>: AVQueryBuilder {
   var symbol: String?
   
-  public class func builder() -> AVHistoricalStockPricesQueryBuilder<Normal> {
-    return AVHistoricalStockPricesQueryBuilder<Normal>()
-  }
-  
-  override public init() {
+  override fileprivate init() {
     symbol = nil
     
     super.init()
