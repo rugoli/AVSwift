@@ -12,6 +12,7 @@
 		0144102D1FFB045600B5675B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0144102B1FFB045600B5675B /* Main.storyboard */; };
 		0144102F1FFB045600B5675B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0144102E1FFB045600B5675B /* Assets.xcassets */; };
 		014410321FFB045600B5675B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 014410301FFB045600B5675B /* LaunchScreen.storyboard */; };
+		01732EBA2020569B002FDB91 /* AVKeychainQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01732EB92020569B002FDB91 /* AVKeychainQuery.swift */; };
 		01F36D7A200B166100512ABC /* AVStockDataFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F36D71200B166000512ABC /* AVStockDataFetcher.swift */; };
 		01F36D7B200B166100512ABC /* AVHistoricalStockPriceModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F36D73200B166000512ABC /* AVHistoricalStockPriceModel.swift */; };
 		01F36D7C200B166100512ABC /* AVHistoricalStockPricesQueryBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F36D75200B166100512ABC /* AVHistoricalStockPricesQueryBuilder.swift */; };
@@ -41,6 +42,7 @@
 		0144102E1FFB045600B5675B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		014410311FFB045600B5675B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		014410331FFB045600B5675B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		01732EB92020569B002FDB91 /* AVKeychainQuery.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVKeychainQuery.swift; sourceTree = "<group>"; };
 		01F36D6E200B160300512ABC /* AVSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVSwift.framework; path = "../../../Library/Developer/Xcode/DerivedData/AVSwift-chlcdcxmrbdxjndhzkkodlksfgkm/Build/Products/Release-iphonesimulator/AVSwift.framework"; sourceTree = "<group>"; };
 		01F36D71200B166000512ABC /* AVStockDataFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVStockDataFetcher.swift; sourceTree = "<group>"; };
 		01F36D73200B166000512ABC /* AVHistoricalStockPriceModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVHistoricalStockPriceModel.swift; sourceTree = "<group>"; };
@@ -135,6 +137,7 @@
 		01F36D78200B166100512ABC /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				01732EB92020569B002FDB91 /* AVKeychainQuery.swift */,
 				01F36D79200B166100512ABC /* AVAPIKeyRegistrar.swift */,
 			);
 			name = Utilities;
@@ -219,6 +222,7 @@
 				01F36D7A200B166100512ABC /* AVStockDataFetcher.swift in Sources */,
 				01F36D7D200B166100512ABC /* AVQueryBuilder.swift in Sources */,
 				01F36D7E200B166100512ABC /* AVQueryBuilderCommon.swift in Sources */,
+				01732EBA2020569B002FDB91 /* AVKeychainQuery.swift in Sources */,
 				014410281FFB045600B5675B /* AppDelegate.swift in Sources */,
 				01F36D7B200B166100512ABC /* AVHistoricalStockPriceModel.swift in Sources */,
 				01F36D7F200B166100512ABC /* AVAPIKeyRegistrar.swift in Sources */,
