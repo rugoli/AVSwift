@@ -30,9 +30,7 @@ public class AVAPIKeyRegistrar: NSObject {
   public func requestUserInputAPIKey(forViewController vc: UIViewController) {
     let alertView = UIAlertController(title: "Enter API key", message: nil, preferredStyle: .alert)
     
-    alertView.addTextField { textField in
-      textField.text = "API key"
-    }
+    alertView.addTextField(configurationHandler: nil)
     
     alertView.addAction(UIAlertAction(title: "OK", style: .default, handler: { [weak alertView, weak self] (_) in
       let textField = alertView?.textFields![0]
