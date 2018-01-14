@@ -9,15 +9,9 @@
 import UIKit
 
 class ViewController: UIViewController {
-
-  override func viewDidLoad() {
-    super.viewDidLoad()
-    var testBuilder = AVHistoricalStockPricesBuilder()
-    testBuilder
-      .setSymbol("MSFT")
-      .setOuputSize(.full)
-    print(testBuilder)
-    // Do any additional setup after loading the view, typically from a nib.
+  @IBAction func addAPIKey(_ sender: Any) {
+    let registrar = AVAPIKeyRegistrar()
+    registrar.requestUserInputAPIKey(forViewController: self)
   }
 }
 
