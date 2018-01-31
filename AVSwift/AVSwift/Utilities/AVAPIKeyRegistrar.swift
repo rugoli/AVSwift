@@ -26,6 +26,7 @@ public class AVAPIKeyRegistrar: NSObject {
     
     // register key
     KeychainService.savePassword(token: key)
+    AVAPIKeyStore.sharedInstance.setAPIKey(apiKey: key)
   }
   
   public func requestUserInputAPIKey(forViewController vc: UIViewController) {

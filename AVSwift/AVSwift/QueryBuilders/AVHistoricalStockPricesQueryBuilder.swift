@@ -13,11 +13,9 @@ public func AVHistoricalStockPricesBuilder() -> AVHistoricalStockPricesQueryBuil
 }
 
 public class AVHistoricalStockPricesQueryBuilder<PriceType: NSObject & Decodable>: AVQueryBuilder {
-  var symbol: String?
+  var symbol: String = ""
   
   override fileprivate init() {
-    symbol = nil
-    
     super.init()
   }
   
@@ -36,7 +34,11 @@ extension AVHistoricalStockPricesQueryBuilder: AVQueryBuilderProtocol {
   }
   
   public func buildURL() -> URL {
-    let url = super.buildBaseURL()
-    return url
+    let urlComponents = super.buildBaseURL()
+    
+    let symbolItem = URLQueryItem(name: "symbol", value: symbol)
+    
+    urlComponents.queryItems?.append(symbolItem)
+    return urlComponents.url!
   }
 }

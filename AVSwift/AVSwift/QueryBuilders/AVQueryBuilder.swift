@@ -22,9 +22,21 @@ public class AVQueryBuilder: NSObject {
     super.init()
   }
   
-  public func buildBaseURL() -> URL {
-    return URL(string: "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=MSFT&outputsize=full&apikey=demo")!
-//    return URL(string: "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&outputsize=\(self.outputSize.rawValue)&datatype=json")!
+  public func buildBaseURL() -> NSURLComponents {
+    let urlComponents = NSURLComponents()
+    urlComponents.scheme = "https"
+    urlComponents.host = "www.alphavantage.co"
+    urlComponents.path = "/query"
+    
+    let functionItem = URLQueryItem(name: "function", value: "TIME_SERIES_DAILY")
+    let outputSizeItem = URLQueryItem(name: "outputsize", value: self.outputSize.rawValue)
+    let dataTypeItem = URLQueryItem(name: "datatype", value: "json")
+    let apiKeyItem = URLQueryItem(name: "apikey", value: AVAPIKeyStore.sharedInstance.apiKey)
+    urlComponents.queryItems = [functionItem, outputSizeItem, dataTypeItem, apiKeyItem]
+    
+    return urlComponents
+    
+//    return URL(string: "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&outputsize=\(self.outputSize.rawValue)&datatype=json&apikey=\(AVAPIKeyStore.sharedInstance.apiKey)")!
   }
   
   public func setOuputSize(_ outputSize: AVOutputSize) -> Self {

@@ -12,7 +12,7 @@ import XCTest
 class AVSwiftTests: XCTestCase {
   
   override func setUp() {
-    // no-op
+    AVAPIKeyStore.sharedInstance.setAPIKey(apiKey: "demo")
   }
   
   func testBuilders() {
