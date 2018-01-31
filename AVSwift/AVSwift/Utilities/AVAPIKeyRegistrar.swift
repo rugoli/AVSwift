@@ -16,7 +16,7 @@ public class AVAPIKeyRegistrar: NSObject {
   private var apiKey: String?
   
   public func getAPIKey() -> String? {
-    return apiKey
+    return KeychainService.loadPassword()
   }
   
   private func registerAPIKey(apiKey: String?) throws {
@@ -25,6 +25,7 @@ public class AVAPIKeyRegistrar: NSObject {
     }
     
     // register key
+    KeychainService.savePassword(token: key)
   }
   
   public func requestUserInputAPIKey(forViewController vc: UIViewController) {

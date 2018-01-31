@@ -9,9 +9,14 @@
 import UIKit
 
 class ViewController: UIViewController {
+  private lazy var registrar = AVAPIKeyRegistrar()
+  
   @IBAction func addAPIKey(_ sender: Any) {
-    let registrar = AVAPIKeyRegistrar()
     registrar.requestUserInputAPIKey(forViewController: self)
+  }
+  
+  @IBAction func getAPIKey(_ sender: Any) {
+    print(registrar.getAPIKey())
   }
 }
 
