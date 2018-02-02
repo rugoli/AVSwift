@@ -13,14 +13,14 @@ enum ModelError: Error {
 }
 
 public final class AVHistoricalStockPriceModel: CustomStringConvertible, AVObjectDescription {
-  let date: String
+  let date: Date
   let open: Float
   let high: Float
   let low: Float
   let close: Float
   let volume: Int
   
-  required public init(date: String,
+  required public init(date: Date,
                 open: Float,
                 high: Float,
                 low: Float,
@@ -52,7 +52,8 @@ extension AVHistoricalStockPriceModel: Decodable {
   public convenience init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: AVHistoricalStockPriceModelKeys.self) // defining our (keyed) container
     do {
-      let date: String = try container.decode(String.self, forKey: .date)
+      let dateString: String = try container.decode(String.self, forKey: .date)
+      let date = try dateString.toDate()
       let open: String = try container.decode(String.self, forKey: .open)
       let high: String = try container.decode(String.self, forKey: .high)
       let low: String = try container.decode(String.self, forKey: .low)
