@@ -25,13 +25,12 @@ class ViewController: UIViewController {
   }
   
   @IBAction func fetchStocks(_ sender: Any) {
-    let query = AVHistoricalStockPricesBuilder()
+    AVHistoricalStockPricesBuilder()
       .setSymbol("MSFT")
-      .build()
-    query.getResults { (stocks, error) in
-      print(stocks)
-      print(error)
-    }
+      .getResults { (stocks, error) in
+        print(stocks)
+        print(error)
+      }
   }
 }
 
