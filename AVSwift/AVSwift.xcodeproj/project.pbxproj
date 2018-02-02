@@ -18,6 +18,7 @@
 		01732EB82020556C002FDB91 /* AVKeychainQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01732EB72020556C002FDB91 /* AVKeychainQuery.swift */; };
 		01732EBC2021A832002FDB91 /* AVAPIKeyStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01732EBB2021A832002FDB91 /* AVAPIKeyStore.swift */; };
 		01732EC720243838002FDB91 /* AVDescriptionHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01732EC620243838002FDB91 /* AVDescriptionHelper.swift */; };
+		01732ECC20243E54002FDB91 /* AVDateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01732ECB20243E54002FDB91 /* AVDateFormatter.swift */; };
 		01F36D50200B094C00512ABC /* AVAPIKeyRegistrar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F36D4F200B094C00512ABC /* AVAPIKeyRegistrar.swift */; };
 /* End PBXBuildFile section */
 
@@ -36,6 +37,7 @@
 		01732EB72020556C002FDB91 /* AVKeychainQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVKeychainQuery.swift; sourceTree = "<group>"; };
 		01732EBB2021A832002FDB91 /* AVAPIKeyStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVAPIKeyStore.swift; sourceTree = "<group>"; };
 		01732EC620243838002FDB91 /* AVDescriptionHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVDescriptionHelper.swift; sourceTree = "<group>"; };
+		01732ECB20243E54002FDB91 /* AVDateFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AVDateFormatter.swift; path = AVSwift/Extensions/AVDateFormatter.swift; sourceTree = SOURCE_ROOT; };
 		01F36D4F200B094C00512ABC /* AVAPIKeyRegistrar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVAPIKeyRegistrar.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -130,6 +132,7 @@
 			isa = PBXGroup;
 			children = (
 				0172A6822002D98A006EF18D /* AVHistoricalStockPriceModel.swift */,
+				01732ECB20243E54002FDB91 /* AVDateFormatter.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -269,6 +272,7 @@
 				0144105D1FFC54AB00B5675B /* AVQueryBuilderCommon.swift in Sources */,
 				014410501FFC0B6400B5675B /* AVHistoricalStockPricesQueryBuilder.swift in Sources */,
 				01732EBC2021A832002FDB91 /* AVAPIKeyStore.swift in Sources */,
+				01732ECC20243E54002FDB91 /* AVDateFormatter.swift in Sources */,
 				014410441FFB538700B5675B /* AVQueryBuilder.swift in Sources */,
 				0172A6832002D98A006EF18D /* AVHistoricalStockPriceModel.swift in Sources */,
 			);
