@@ -33,7 +33,7 @@ extension AVHistoricalStockPricesQueryBuilder: AVQueryBuilderProtocol {
     return AVStockDataFetcher<PriceType>(url: self.buildURL())
   }
   
-  public func buildURL() -> URL {
+  internal func buildURL() -> URL {
     let urlComponents = super.buildBaseURL()
     
     let symbolItem = URLQueryItem(name: "symbol", value: symbol)

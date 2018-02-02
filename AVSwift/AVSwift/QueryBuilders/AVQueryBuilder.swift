@@ -35,8 +35,6 @@ public class AVQueryBuilder: NSObject {
     urlComponents.queryItems = [functionItem, outputSizeItem, dataTypeItem, apiKeyItem]
     
     return urlComponents
-    
-//    return URL(string: "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&outputsize=\(self.outputSize.rawValue)&datatype=json&apikey=\(AVAPIKeyStore.sharedInstance.apiKey)")!
   }
   
   public func setOuputSize(_ outputSize: AVOutputSize) -> Self {

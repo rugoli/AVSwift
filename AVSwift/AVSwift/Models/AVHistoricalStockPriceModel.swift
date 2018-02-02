@@ -14,18 +14,18 @@ enum ModelError: Error {
 
 public final class AVHistoricalStockPriceModel: NSObject {
   let date: String
-  let open: String
-  let high: String
-  let low: String
-  let close: String
-  let volume: String
+  let open: Float
+  let high: Float
+  let low: Float
+  let close: Float
+  let volume: Int
   
   required public init(date: String,
-                open: String,
-                high: String,
-                low: String,
-                close: String,
-                volume: String) {
+                open: Float,
+                high: Float,
+                low: Float,
+                close: Float,
+                volume: Int) {
     self.date = date
     self.open = open
     self.high = high
@@ -56,7 +56,7 @@ extension AVHistoricalStockPriceModel: Decodable {
       let low: String = try container.decode(String.self, forKey: .low)
       let close: String = try container.decode(String.self, forKey: .close)
       let volume: String = try container.decode(String.self, forKey: .volume)
-      self.init(date: date, open: open, high: high, low: low, close: close, volume: volume)
+      self.init(date: date, open: Float(open)!, high: Float(high)!, low: Float(low)! , close: Float(close)!, volume: Int(volume)!)
     } catch {
       throw ModelError.parsingError(error: error.localizedDescription)
     }

@@ -11,12 +11,27 @@ import UIKit
 class ViewController: UIViewController {
   private lazy var registrar = AVAPIKeyRegistrar()
   
+  required init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+    AVAPIKeyStore.sharedInstance.setAPIKey(apiKey: registrar.getAPIKey()!)
+  }
+  
   @IBAction func addAPIKey(_ sender: Any) {
     registrar.requestUserInputAPIKey(forViewController: self)
   }
   
   @IBAction func getAPIKey(_ sender: Any) {
     print(registrar.getAPIKey())
+  }
+  
+  @IBAction func fetchStocks(_ sender: Any) {
+    let query = AVHistoricalStockPricesBuilder()
+      .setSymbol("MSFT")
+      .build()
+    query.getResults { (stocks, error) in
+      print(stocks)
+      print(error)
+    }
   }
 }
 

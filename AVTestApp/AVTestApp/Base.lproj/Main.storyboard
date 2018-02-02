@@ -33,12 +33,21 @@
                                     <action selector="getAPIKey:" destination="BYZ-38-t0r" eventType="touchUpInside" id="KVZ-Mn-FwH"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Mwl-zd-Qjg">
+                                <rect key="frame" x="153" y="318" width="91" height="30"/>
+                                <state key="normal" title="Fetch Stocks"/>
+                                <connections>
+                                    <action selector="fetchStocks:" destination="BYZ-38-t0r" eventType="touchUpInside" id="LYL-Yj-kbj"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="Mwl-zd-Qjg" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="8bY-EY-ume"/>
                             <constraint firstItem="nCr-tt-2Fe" firstAttribute="top" secondItem="WR5-5g-3S2" secondAttribute="bottom" constant="53" id="AjJ-nG-jfo"/>
                             <constraint firstItem="nCr-tt-2Fe" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="PhN-zn-xix"/>
                             <constraint firstItem="WR5-5g-3S2" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="135" id="PjI-Rt-0Qg"/>
+                            <constraint firstItem="Mwl-zd-Qjg" firstAttribute="top" secondItem="nCr-tt-2Fe" secondAttribute="bottom" constant="50" id="YOS-jC-T4T"/>
                             <constraint firstItem="nCr-tt-2Fe" firstAttribute="centerX" secondItem="WR5-5g-3S2" secondAttribute="centerX" id="g7i-5m-seg"/>
                             <constraint firstItem="nCr-tt-2Fe" firstAttribute="centerX" secondItem="WR5-5g-3S2" secondAttribute="centerX" id="sGC-df-6A6"/>
                             <constraint firstItem="WR5-5g-3S2" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="vca-ip-aWQ"/>
