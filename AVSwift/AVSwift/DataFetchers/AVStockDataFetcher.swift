@@ -11,7 +11,7 @@ import Foundation
 
 fileprivate let metadataKey: String = "Metadata"
 
-public class AVStockDataFetcher<ModelType: NSObject & Decodable>: NSObject {
+public class AVStockDataFetcher<ModelType: Decodable>: NSObject {
   let url: URL
   
   public init(url: URL) {

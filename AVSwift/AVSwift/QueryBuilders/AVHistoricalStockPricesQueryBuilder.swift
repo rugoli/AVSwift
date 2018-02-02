@@ -12,7 +12,7 @@ public func AVHistoricalStockPricesBuilder() -> AVHistoricalStockPricesQueryBuil
   return AVHistoricalStockPricesQueryBuilder<AVHistoricalStockPriceModel>()
 }
 
-public class AVHistoricalStockPricesQueryBuilder<PriceType: NSObject & Decodable>: AVQueryBuilder {
+public class AVHistoricalStockPricesQueryBuilder<PriceType: Decodable>: AVQueryBuilder {
   var symbol: String = ""
   
   override fileprivate init() {

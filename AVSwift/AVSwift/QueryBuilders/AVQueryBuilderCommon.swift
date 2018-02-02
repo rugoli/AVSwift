@@ -9,7 +9,7 @@
 import UIKit
 
 protocol AVQueryBuilderProtocol: class {
-  associatedtype ModelType: NSObject, Decodable
+  associatedtype ModelType: Decodable
   
   func build() -> AVStockDataFetcher<ModelType>
   func buildURL() -> URL

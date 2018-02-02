@@ -12,7 +12,7 @@ enum ModelError: Error {
   case parsingError(error: String)
 }
 
-public final class AVHistoricalStockPriceModel: NSObject {
+public final class AVHistoricalStockPriceModel: CustomStringConvertible, AVObjectDescription {
   let date: String
   let open: Float
   let high: Float
@@ -32,8 +32,10 @@ public final class AVHistoricalStockPriceModel: NSObject {
     self.low = low
     self.close = close
     self.volume = volume
-    
-    super.init()
+  }
+  
+  public var description: String {
+    return self.description(for: self)
   }
 }
 
