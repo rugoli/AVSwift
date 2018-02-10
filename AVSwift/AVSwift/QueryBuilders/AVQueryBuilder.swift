@@ -22,13 +22,19 @@ public class AVQueryBuilder: NSObject {
     super.init()
   }
   
+  open func timeSeriesFunction() -> String {
+    assertionFailure("Must be overriden by subclass")
+    return ""
+  }
+  
+  
   public func buildBaseURL() -> NSURLComponents {
     let urlComponents = NSURLComponents()
     urlComponents.scheme = "https"
     urlComponents.host = "www.alphavantage.co"
     urlComponents.path = "/query"
     
-    let functionItem = URLQueryItem(name: "function", value: "TIME_SERIES_DAILY")
+    let functionItem = URLQueryItem(name: "function", value: self.timeSeriesFunction())
     let outputSizeItem = URLQueryItem(name: "outputsize", value: self.outputSize.rawValue)
     let dataTypeItem = URLQueryItem(name: "datatype", value: "json")
     let apiKeyItem = URLQueryItem(name: "apikey", value: AVAPIKeyStore.sharedInstance.apiKey)

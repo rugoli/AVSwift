@@ -24,6 +24,10 @@ public class AVHistoricalStockPricesQueryBuilder<PriceType: Decodable>: AVQueryB
     return self
   }
   
+  override public func timeSeriesFunction() -> String {
+    return "TIME_SERIES_DAILY"
+  }
+  
 }
 
 extension AVHistoricalStockPricesQueryBuilder: AVQueryBuilderProtocol {
