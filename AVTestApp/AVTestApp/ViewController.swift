@@ -21,15 +21,24 @@ class ViewController: UIViewController {
   }
   
   @IBAction func getAPIKey(_ sender: Any) {
-    print(registrar.getAPIKey())
+    print(registrar.getAPIKey() as Any)
   }
   
-  @IBAction func fetchStocks(_ sender: Any) {
+  @IBAction func fetchDailyStocks(_ sender: Any) {
     AVHistoricalStockPricesBuilder()
       .setSymbol("MSFT")
       .getResults { (stocks, error) in
-        print(stocks)
-        print(error)
+        print(stocks as Any)
+        print(error as Any)
+      }
+  }
+  
+  @IBAction func fetchWeeklyStocks(_ sender: Any) {
+    AVHistoricalStockPricesBuilder()
+      .setSymbol("MSFT")
+      .setPeriodicity(.weekly)
+      .getResults { (stocks, error) in
+        print(stocks as Any)
       }
   }
 }

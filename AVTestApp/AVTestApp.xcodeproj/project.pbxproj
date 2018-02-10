@@ -16,6 +16,7 @@
 		01732EBE2021A9C2002FDB91 /* AVAPIKeyStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01732EBD2021A9C2002FDB91 /* AVAPIKeyStore.swift */; };
 		01732ECA202438CE002FDB91 /* AVDescriptionHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01732EC9202438CE002FDB91 /* AVDescriptionHelper.swift */; };
 		01732ECE20243ED2002FDB91 /* AVDateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01732ECD20243ED2002FDB91 /* AVDateFormatter.swift */; };
+		01732ED2202EDE26002FDB91 /* AVHistoricalTimeSeriesPeriodicity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01732ED1202EDE26002FDB91 /* AVHistoricalTimeSeriesPeriodicity.swift */; };
 		01F36D7A200B166100512ABC /* AVStockDataFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F36D71200B166000512ABC /* AVStockDataFetcher.swift */; };
 		01F36D7B200B166100512ABC /* AVHistoricalStockPriceModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F36D73200B166000512ABC /* AVHistoricalStockPriceModel.swift */; };
 		01F36D7C200B166100512ABC /* AVHistoricalStockPricesQueryBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F36D75200B166100512ABC /* AVHistoricalStockPricesQueryBuilder.swift */; };
@@ -49,6 +50,7 @@
 		01732EBD2021A9C2002FDB91 /* AVAPIKeyStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVAPIKeyStore.swift; sourceTree = "<group>"; };
 		01732EC9202438CE002FDB91 /* AVDescriptionHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVDescriptionHelper.swift; sourceTree = "<group>"; };
 		01732ECD20243ED2002FDB91 /* AVDateFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVDateFormatter.swift; sourceTree = "<group>"; };
+		01732ED1202EDE26002FDB91 /* AVHistoricalTimeSeriesPeriodicity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVHistoricalTimeSeriesPeriodicity.swift; sourceTree = "<group>"; };
 		01F36D6E200B160300512ABC /* AVSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVSwift.framework; path = "../../../Library/Developer/Xcode/DerivedData/AVSwift-chlcdcxmrbdxjndhzkkodlksfgkm/Build/Products/Release-iphonesimulator/AVSwift.framework"; sourceTree = "<group>"; };
 		01F36D71200B166000512ABC /* AVStockDataFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVStockDataFetcher.swift; sourceTree = "<group>"; };
 		01F36D73200B166000512ABC /* AVHistoricalStockPriceModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVHistoricalStockPriceModel.swift; sourceTree = "<group>"; };
@@ -143,6 +145,7 @@
 		01F36D74200B166100512ABC /* QueryBuilders */ = {
 			isa = PBXGroup;
 			children = (
+				01732ED1202EDE26002FDB91 /* AVHistoricalTimeSeriesPeriodicity.swift */,
 				01F36D75200B166100512ABC /* AVHistoricalStockPricesQueryBuilder.swift */,
 				01F36D76200B166100512ABC /* AVQueryBuilder.swift */,
 				01F36D77200B166100512ABC /* AVQueryBuilderCommon.swift */,
@@ -235,6 +238,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				01732ED2202EDE26002FDB91 /* AVHistoricalTimeSeriesPeriodicity.swift in Sources */,
 				01F36D7C200B166100512ABC /* AVHistoricalStockPricesQueryBuilder.swift in Sources */,
 				0144102A1FFB045600B5675B /* ViewController.swift in Sources */,
 				01F36D7A200B166100512ABC /* AVStockDataFetcher.swift in Sources */,

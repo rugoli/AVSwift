@@ -34,10 +34,17 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Mwl-zd-Qjg">
-                                <rect key="frame" x="153" y="318" width="91" height="30"/>
-                                <state key="normal" title="Fetch Stocks"/>
+                                <rect key="frame" x="120" y="318" width="142" height="30"/>
+                                <state key="normal" title="Fetch Daily Stocks"/>
                                 <connections>
-                                    <action selector="fetchStocks:" destination="BYZ-38-t0r" eventType="touchUpInside" id="LYL-Yj-kbj"/>
+                                    <action selector="fetchDailyStocks:" destination="BYZ-38-t0r" eventType="touchUpInside" id="oau-SG-vEp"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7uv-rz-QVJ">
+                                <rect key="frame" x="116.5" y="391" width="143" height="30"/>
+                                <state key="normal" title="Fetch Weekly Stocks"/>
+                                <connections>
+                                    <action selector="fetchWeeklyStocks:" destination="BYZ-38-t0r" eventType="touchUpInside" id="3SB-TL-iwK"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -45,11 +52,15 @@
                         <constraints>
                             <constraint firstItem="Mwl-zd-Qjg" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="8bY-EY-ume"/>
                             <constraint firstItem="nCr-tt-2Fe" firstAttribute="top" secondItem="WR5-5g-3S2" secondAttribute="bottom" constant="53" id="AjJ-nG-jfo"/>
+                            <constraint firstItem="7uv-rz-QVJ" firstAttribute="centerX" secondItem="Mwl-zd-Qjg" secondAttribute="centerX" id="MOE-1z-Fmf"/>
                             <constraint firstItem="nCr-tt-2Fe" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="PhN-zn-xix"/>
                             <constraint firstItem="WR5-5g-3S2" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="135" id="PjI-Rt-0Qg"/>
                             <constraint firstItem="Mwl-zd-Qjg" firstAttribute="top" secondItem="nCr-tt-2Fe" secondAttribute="bottom" constant="50" id="YOS-jC-T4T"/>
+                            <constraint firstItem="Mwl-zd-Qjg" firstAttribute="centerX" secondItem="nCr-tt-2Fe" secondAttribute="centerX" id="eAj-8I-lXu"/>
                             <constraint firstItem="nCr-tt-2Fe" firstAttribute="centerX" secondItem="WR5-5g-3S2" secondAttribute="centerX" id="g7i-5m-seg"/>
                             <constraint firstItem="nCr-tt-2Fe" firstAttribute="centerX" secondItem="WR5-5g-3S2" secondAttribute="centerX" id="sGC-df-6A6"/>
+                            <constraint firstItem="7uv-rz-QVJ" firstAttribute="top" secondItem="Mwl-zd-Qjg" secondAttribute="bottom" constant="43" id="sIv-cs-4pD"/>
+                            <constraint firstItem="Mwl-zd-Qjg" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="vPl-Nb-oNs"/>
                             <constraint firstItem="WR5-5g-3S2" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="vca-ip-aWQ"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
