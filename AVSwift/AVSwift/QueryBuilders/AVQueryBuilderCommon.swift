@@ -12,13 +12,16 @@ protocol AVQueryBuilderProtocol: class {
   associatedtype ModelType: Decodable
   
   func buildURL() -> URL
-  func build() -> AVStockDataFetcher<ModelType>
   
   func getResults(completion: ([ModelType]?, Error?) -> Void)
   func getRawResults(completion: (NSDictionary) -> Void)
 }
 
 extension AVQueryBuilderProtocol {
+  
+  private func build() -> AVStockDataFetcher<ModelType> {
+    return AVStockDataFetcher<ModelType>(url: self.buildURL())
+  }
   
   // convenience methods to go straight from the query builder to the results
   public func getResults(completion: ([ModelType]?, Error?) -> Void) {
