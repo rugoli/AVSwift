@@ -8,13 +8,14 @@
 
 import UIKit
 
-public func AVHistoricalStockPricesBuilder() -> AVHistoricalStockPricesQueryBuilder<AVHistoricalStockPriceModel> {
-  return AVHistoricalStockPricesQueryBuilder<AVHistoricalStockPriceModel>()
+public func AVHistoricalStockPricesBuilder() -> AVHistoricalStockPricesQueryBuilder<AVHistoricalAdjustedStockPriceModel> {
+  return AVHistoricalStockPricesQueryBuilder<AVHistoricalAdjustedStockPriceModel>()
 }
 
 public class AVHistoricalStockPricesQueryBuilder<PriceType: Decodable>: AVQueryBuilder {
-  var symbol: String = ""
-  var periodicity: AVHistoricalTimeSeriesPeriodicity = .daily
+  fileprivate var symbol: String = ""
+  fileprivate var periodicity: AVHistoricalTimeSeriesPeriodicity = .daily
+  fileprivate var isAdjusted: Bool = true
   
   override fileprivate init() {
     super.init()
@@ -31,17 +32,21 @@ public class AVHistoricalStockPricesQueryBuilder<PriceType: Decodable>: AVQueryB
   }
   
   override public func timeSeriesFunction() -> String {
-    return self.periodicity.standardFunction()
+    return isAdjusted
+      ? periodicity.adjustedFunction()
+      : periodicity.standardFunction()
+  }
+  
+  public func withAdjustedPrices() -> AVHistoricalStockPricesQueryBuilder<AVHistoricalAdjustedStockPriceModel> {
+    let adjustedQuery: AVHistoricalStockPricesQueryBuilder<AVHistoricalAdjustedStockPriceModel> = self.copy()
+    adjustedQuery.isAdjusted = true
+    return adjustedQuery
   }
   
 }
 
 extension AVHistoricalStockPricesQueryBuilder: AVQueryBuilderProtocol {
   typealias ModelType = PriceType
-  
-  public func build() -> AVStockDataFetcher<PriceType> {
-    return AVStockDataFetcher<PriceType>(url: self.buildURL())
-  }
   
   internal func buildURL() -> URL {
     let urlComponents = super.buildBaseURL()
@@ -50,5 +55,18 @@ extension AVHistoricalStockPricesQueryBuilder: AVQueryBuilderProtocol {
     
     urlComponents.queryItems?.append(symbolItem)
     return urlComponents.url!
+  }
+}
+
+// MARK - Copying
+
+extension AVHistoricalStockPricesQueryBuilder {
+  private func copy<NewType: Decodable>() -> AVHistoricalStockPricesQueryBuilder<NewType> {
+    let newBuilder = AVHistoricalStockPricesQueryBuilder<NewType>()
+    newBuilder.isAdjusted = isAdjusted
+    newBuilder.symbol = symbol
+    newBuilder.periodicity = periodicity
+    newBuilder.outputSize = outputSize
+    return newBuilder
   }
 }

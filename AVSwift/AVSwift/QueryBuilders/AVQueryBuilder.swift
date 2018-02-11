@@ -14,7 +14,7 @@ public enum AVOutputSize: String {
 }
 
 public class AVQueryBuilder: NSObject {
-  var outputSize: AVOutputSize
+  open var outputSize: AVOutputSize
   
   override init() {
     outputSize = .compact

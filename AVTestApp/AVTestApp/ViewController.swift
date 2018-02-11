@@ -27,6 +27,7 @@ class ViewController: UIViewController {
   @IBAction func fetchDailyStocks(_ sender: Any) {
     AVHistoricalStockPricesBuilder()
       .setSymbol("MSFT")
+      .withAdjustedPrices()
       .getResults { (stocks, error) in
         print(stocks as Any)
         print(error as Any)
