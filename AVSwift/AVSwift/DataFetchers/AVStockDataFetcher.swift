@@ -22,22 +22,8 @@ public class AVStockDataFetcher<ModelType: Decodable>: NSObject {
   
   public func getResults(completion: ([ModelType]?, Error?) -> Void) {
     do {
-      let data = try Data.init(contentsOf: url)
-      let json = try JSONSerialization.jsonObject(with: data, options: .mutableLeaves) as! [String: Any]
-      
-      var dataKey: String? = nil
-      for key in json.keys {
-        if key != metadataKey {
-          dataKey = key
-          break
-        }
-      }
-      
-      guard let timeSeriesKey = dataKey else {
-        return
-      }
-      let timeSeries: [String: [String: String]] = json[timeSeriesKey]! as! [String : [String: String]]
-      let parsed: [ModelType] = timeSeries.flatMap({ key, value in
+      let timeSeries = try fetchData()
+      let parsed: [ModelType]? = timeSeries.flatMap({ (key, value) in
         var mutableDict = value
         mutableDict["date"] = key
         do {
@@ -56,5 +42,28 @@ public class AVStockDataFetcher<ModelType: Decodable>: NSObject {
   
   public func getRawResults(completion: (NSDictionary) -> Void) {
     // no-op
+  }
+  
+  // MARK - Private
+  
+  private func fetchData() throws -> [String: [String: String]] {
+    let data = try Data.init(contentsOf: url)
+    let json = try JSONSerialization.jsonObject(with: data, options: .mutableLeaves) as! [String: Any]
+    
+    var dataKey: String? = nil
+    for key in json.keys {
+      if key != metadataKey {
+        dataKey = key
+        break
+      }
+    }
+    
+    guard let timeSeriesKey = dataKey else {
+      throw AVDataFetchingError.timeSeriesKeyMissing
+    }
+    guard let result = json[timeSeriesKey] as? [String : [String: String]] else {
+      throw AVDataFetchingError.noJSONSerialization
+    }
+    return result
   }
 }

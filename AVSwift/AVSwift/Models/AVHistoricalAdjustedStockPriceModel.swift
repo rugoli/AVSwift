@@ -17,7 +17,7 @@ public final class AVHistoricalAdjustedStockPriceModel: CustomStringConvertible,
   let adjustedClose: Float
   let volume: Int
   let dividend: Float
-  let splitCoefficient: Float
+  let splitCoefficient: Float?
   
   required public init(date: Date,
                 open: Float,
@@ -27,7 +27,7 @@ public final class AVHistoricalAdjustedStockPriceModel: CustomStringConvertible,
                 adjustedClose: Float,
                 volume: Int,
                 dividend: Float,
-                splitCoefficient: Float) {
+                splitCoefficient: Float?) {
     self.date = date
     self.open = open
     self.high = high
@@ -69,10 +69,19 @@ extension AVHistoricalAdjustedStockPriceModel: Decodable {
       let adjustedClose: String = try container.decode(String.self, forKey: .adjustedClose)
       let volume: String = try container.decode(String.self, forKey: .volume)
       let dividend: String = try container.decode(String.self, forKey: .dividend)
-      let splitCoeff: String = try container.decode(String.self, forKey: .splitCoefficient)
-      self.init(date: date, open: Float(open)!, high: Float(high)!, low: Float(low)! , close: Float(close)!, adjustedClose: Float(adjustedClose)!, volume: Int(volume)!, dividend: Float(dividend)!, splitCoefficient: Float(splitCoeff)!)
+      let splitCoeff: String? = try? container.decode(String.self, forKey: .splitCoefficient)
+      self.init(
+        date: date,
+        open: Float(open)!,
+        high: Float(high)!,
+        low: Float(low)! ,
+        close: Float(close)!,
+        adjustedClose: Float(adjustedClose)!,
+        volume: Int(volume)!,
+        dividend: Float(dividend)!,
+        splitCoefficient: splitCoeff != nil ? Float(splitCoeff!)! : nil)
     } catch {
-      throw ModelError.parsingError(error: error.localizedDescription)
+      throw AVModelError.parsingError(error: error.localizedDescription)
     }
   }
 }

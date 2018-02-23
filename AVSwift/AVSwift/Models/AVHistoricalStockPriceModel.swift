@@ -8,10 +8,6 @@
 
 import UIKit
 
-enum ModelError: Error {
-  case parsingError(error: String)
-}
-
 public final class AVHistoricalStockPriceModel: CustomStringConvertible, AVObjectDescription {
   let date: Date
   let open: Float
@@ -61,7 +57,7 @@ extension AVHistoricalStockPriceModel: Decodable {
       let volume: String = try container.decode(String.self, forKey: .volume)
       self.init(date: date, open: Float(open)!, high: Float(high)!, low: Float(low)! , close: Float(close)!, volume: Int(volume)!)
     } catch {
-      throw ModelError.parsingError(error: error.localizedDescription)
+      throw AVModelError.parsingError(error: error.localizedDescription)
     }
   }
 }
