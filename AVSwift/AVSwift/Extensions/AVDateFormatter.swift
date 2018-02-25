@@ -24,7 +24,7 @@ extension String {
 }
 
 extension Date {
-  static func from(month: Int, day: Int, year: Int, withFallback fallback: Date?) throws -> Date {
+  static func from(month: Int, day: Int, year: Int, withFallback fallback: Date? = nil) throws -> Date {
     let monthFormat = String(format: "%02d", month)
     let dayFormat = String(format: "%02d", day)
     do {
