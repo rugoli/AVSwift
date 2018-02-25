@@ -15,8 +15,8 @@ protocol AVQueryBuilderProtocol: class {
   
   var modelFilters: [ModelFilter<ModelType>] { get }
   
-  func getResults(completion: ([ModelType]?, Error?) -> Void)
-  func getRawResults(completion: (NSDictionary) -> Void)
+  func getResults(completion: @escaping ([ModelType]?, Error?) -> Void)
+  func getRawResults(completion: @escaping (NSDictionary) -> Void)
 }
 
 extension AVQueryBuilderProtocol {
@@ -26,11 +26,11 @@ extension AVQueryBuilderProtocol {
   }
   
   // convenience methods to go straight from the query builder to the results
-  public func getResults(completion: ([ModelType]?, Error?) -> Void) {
+  public func getResults(completion: @escaping ([ModelType]?, Error?) -> Void) {
     self.build(withFilters: self.modelFilters).getResults(completion: completion)
   }
   
-  public func getRawResults(completion: (NSDictionary) -> Void) {
+  public func getRawResults(completion: @escaping (NSDictionary) -> Void) {
     self.build(withFilters: self.modelFilters).getRawResults(completion: completion)
   }
 }
