@@ -74,7 +74,7 @@ class ViewController: UIViewController {
   
   private func fetchStandardPrices() {
     print("Periodicity: \(selectedPeriodicity)")
-    AVHistoricalStockPricesBuilder()
+    AVHistoricalStandardStockPricesBuilder()
       .setSymbol("MSFT")
       .setPeriodicity(selectedPeriodicity)
       .getResults { (stocks, error) in
