@@ -23,25 +23,28 @@ public class AVStockDataFetcher<ModelType: Decodable>: NSObject {
     super.init()
   }
   
-  public func getResults(completion: ([ModelType]?, Error?) -> Void) {
-    do {
-      let timeSeries = try fetchData()
-      let parsed: [ModelType]? = timeSeries.flatMap({ [weak self] (key, value) in
-        guard let `self` = self else { return nil }
-        var mutableDict = value
-        mutableDict["date"] = key
-        do {
-          let element = try JSONDecoder().decode(ModelType.self, from: JSONSerialization.data(withJSONObject: mutableDict, options: .prettyPrinted))
-          guard self.evaluateFilterChain(model: element) else { return nil }
-          return element
-        } catch {
-          completion(nil, error)
-        }
-        return nil
-      })
-      completion(parsed, nil)
-    } catch {
-      completion(nil, error)
+  public func getResults(completion: @escaping ([ModelType]?, Error?) -> Void) {
+    let url = self.url
+    let modelFilters = self.filters
+    DispatchQueue.global(qos: .userInitiated).async {
+      do {
+        let timeSeries = try AVStockDataFetcher.fetchData(forURL: url)
+        let parsed: [ModelType]? = timeSeries.flatMap({ (key, value) in
+          var mutableDict = value
+          mutableDict["date"] = key
+          do {
+            let element = try JSONDecoder().decode(ModelType.self, from: JSONSerialization.data(withJSONObject: mutableDict, options: .prettyPrinted))
+            guard AVStockDataFetcher.evaluateFilterChain(model: element, forFilters: modelFilters) else { return nil }
+            return element
+          } catch {
+            completion(nil, error)
+          }
+          return nil
+        })
+        completion(parsed, nil)
+      } catch {
+        completion(nil, error)
+      }
     }
   }
   
@@ -51,7 +54,7 @@ public class AVStockDataFetcher<ModelType: Decodable>: NSObject {
   
   // MARK - Private
   
-  private func evaluateFilterChain(model: ModelType) -> Bool {
+  private static func evaluateFilterChain(model: ModelType, forFilters filters: [ModelFilter<ModelType>]) -> Bool {
     for filter in filters {
       guard filter(model) else { return false }
     }
@@ -59,7 +62,7 @@ public class AVStockDataFetcher<ModelType: Decodable>: NSObject {
     return true
   }
   
-  private func fetchData() throws -> [String: [String: String]] {
+  private static func fetchData(forURL url: URL) throws -> [String: [String: String]] {
     let data = try Data.init(contentsOf: url)
     let json = try JSONSerialization.jsonObject(with: data, options: .mutableLeaves) as! [String: Any]
     
