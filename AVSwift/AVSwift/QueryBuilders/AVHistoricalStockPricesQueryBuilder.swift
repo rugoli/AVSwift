@@ -8,38 +8,14 @@
 
 import UIKit
 
-// MARK: AVHistoricalStockPricesBuilder
-
-public class AVHistoricalStockPricesBuilder: AVHistoricalStockPricesQueryBuilderBase {
-  
-  public init() {
-    super.init(withAdjustedPrices: false)
-  }
-}
-
-extension AVHistoricalStockPricesBuilder: AVQueryBuilderProtocol
-{
-  typealias ModelType = AVHistoricalStockPriceModel
-}
-
-// MARK: AVHistoricalAdjustedStockPricesBuilder
-
-public class AVHistoricalAdjustedStockPricesBuilder: AVHistoricalStockPricesQueryBuilderBase {
-  
-  public init() {
-    super.init(withAdjustedPrices: true)
-  }
-}
-
-extension AVHistoricalAdjustedStockPricesBuilder: AVQueryBuilderProtocol
-{
-  typealias ModelType = AVHistoricalAdjustedStockPriceModel
-}
+// MARK: AVHistoricalStockPricesBuilderProtocol
 
 public protocol AVHistoricalStockPricesBuilderProtocol : AVQueryBuilderBase {
   func setSymbol(_ symbol: String) -> Self
   func setPeriodicity(_ periodicity: AVHistoricalTimeSeriesPeriodicity) -> Self
 }
+
+// MARK: AVHistoricalStockPricesQueryBuilderBase
 
 public class AVHistoricalStockPricesQueryBuilderBase: AVQueryBuilder {
   fileprivate var symbol: String = ""
@@ -69,6 +45,8 @@ public class AVHistoricalStockPricesQueryBuilderBase: AVQueryBuilder {
   
 }
 
+// MARK: AVHistoricalStockPricesBuilderProtocol
+
 extension AVHistoricalStockPricesQueryBuilderBase: AVHistoricalStockPricesBuilderProtocol {
   public func setSymbol(_ symbol: String) -> Self {
     self.symbol = symbol
@@ -79,4 +57,32 @@ extension AVHistoricalStockPricesQueryBuilderBase: AVHistoricalStockPricesBuilde
     self.periodicity = periodicity
     return self
   }
+}
+
+// MARK: AVHistoricalStandardStockPricesBuilder
+
+public class AVHistoricalStandardStockPricesBuilder: AVHistoricalStockPricesQueryBuilderBase {
+  
+  public init() {
+    super.init(withAdjustedPrices: false)
+  }
+}
+
+extension AVHistoricalStandardStockPricesBuilder: AVQueryBuilderProtocol
+{
+  typealias ModelType = AVHistoricalStockPriceModel
+}
+
+// MARK: AVHistoricalAdjustedStockPricesBuilder
+
+public class AVHistoricalAdjustedStockPricesBuilder: AVHistoricalStockPricesQueryBuilderBase {
+  
+  public init() {
+    super.init(withAdjustedPrices: true)
+  }
+}
+
+extension AVHistoricalAdjustedStockPricesBuilder: AVQueryBuilderProtocol
+{
+  typealias ModelType = AVHistoricalAdjustedStockPriceModel
 }
