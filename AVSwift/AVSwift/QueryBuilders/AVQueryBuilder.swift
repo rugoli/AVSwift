@@ -13,6 +13,10 @@ public enum AVOutputSize: String {
   case full = "full"
 }
 
+public protocol AVQueryBuilderBase {
+  func setOuputSize(_ outputSize: AVOutputSize) -> Self
+}
+
 public class AVQueryBuilder: NSObject {
   open var outputSize: AVOutputSize
   
@@ -28,7 +32,7 @@ public class AVQueryBuilder: NSObject {
   }
   
   
-  public func buildBaseURL() -> NSURLComponents {
+  open func buildBaseURL() -> NSURLComponents {
     let urlComponents = NSURLComponents()
     urlComponents.scheme = "https"
     urlComponents.host = "www.alphavantage.co"

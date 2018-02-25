@@ -10,6 +10,7 @@ import UIKit
 
 class ViewController: UIViewController {
   private lazy var registrar = AVAPIKeyRegistrar()
+  private lazy var isAdjusted = false
   
   required init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
@@ -24,23 +25,36 @@ class ViewController: UIViewController {
     print(registrar.getAPIKey() as Any)
   }
   
-  @IBAction func fetchDailyStocks(_ sender: Any) {
-    AVHistoricalStockPricesBuilder()
+  @IBAction func setAdjustedPrices(_ adjustedSwitch: UISwitch)
+  {
+    isAdjusted = adjustedSwitch.isOn
+  }
+  
+  @IBAction func fetchData()
+  {
+    if isAdjusted {
+      self.fetchAdjustedPrices()
+    } else {
+      self.fetchStandardPrices()
+    }
+  }
+  
+  private func fetchAdjustedPrices() {
+    AVHistoricalAdjustedStockPricesBuilder()
       .setSymbol("MSFT")
-      .withAdjustedPrices()
       .getResults { (stocks, error) in
         print(stocks as Any)
         print(error as Any)
-      }
+    }
   }
   
-  @IBAction func fetchWeeklyStocks(_ sender: Any) {
+  private func fetchStandardPrices() {
     AVHistoricalStockPricesBuilder()
       .setSymbol("MSFT")
-      .setPeriodicity(.weekly)
       .getResults { (stocks, error) in
         print(stocks as Any)
-      }
+        print(error as Any)
+    }
   }
 }
 
