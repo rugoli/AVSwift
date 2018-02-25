@@ -6,10 +6,14 @@
 //  Copyright © 2018 Roshan. All rights reserved.
 //
 
-public enum AVHistoricalTimeSeriesPeriodicity {
-  case daily
-  case weekly
-  case monthly
+public enum AVHistoricalTimeSeriesPeriodicity: String {
+  case daily = "Daily"
+  case weekly = "Weekly"
+  case monthly = "Monthly"
+  
+  static func ordering() -> [AVHistoricalTimeSeriesPeriodicity] {
+    return [.daily, .weekly, .monthly]
+  }
   
   func standardFunction() -> String {
     switch self {

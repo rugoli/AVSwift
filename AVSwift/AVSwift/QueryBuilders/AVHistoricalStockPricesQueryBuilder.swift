@@ -8,27 +8,48 @@
 
 import UIKit
 
-public func AVHistoricalStockPricesBuilder() -> AVHistoricalStockPricesQueryBuilder<AVHistoricalAdjustedStockPriceModel> {
-  return AVHistoricalStockPricesQueryBuilder<AVHistoricalAdjustedStockPriceModel>()
+// MARK: AVHistoricalStockPricesBuilder
+
+public class AVHistoricalStockPricesBuilder: AVHistoricalStockPricesQueryBuilderBase {
+  
+  public init() {
+    super.init(withAdjustedPrices: false)
+  }
 }
 
-public class AVHistoricalStockPricesQueryBuilder<PriceType: Decodable>: AVQueryBuilder {
+extension AVHistoricalStockPricesBuilder: AVQueryBuilderProtocol
+{
+  typealias ModelType = AVHistoricalStockPriceModel
+}
+
+// MARK: AVHistoricalAdjustedStockPricesBuilder
+
+public class AVHistoricalAdjustedStockPricesBuilder: AVHistoricalStockPricesQueryBuilderBase {
+  
+  public init() {
+    super.init(withAdjustedPrices: true)
+  }
+}
+
+extension AVHistoricalAdjustedStockPricesBuilder: AVQueryBuilderProtocol
+{
+  typealias ModelType = AVHistoricalAdjustedStockPriceModel
+}
+
+public protocol AVHistoricalStockPricesBuilderProtocol : AVQueryBuilderBase {
+  func setSymbol(_ symbol: String) -> Self
+  func setPeriodicity(_ periodicity: AVHistoricalTimeSeriesPeriodicity) -> Self
+}
+
+public class AVHistoricalStockPricesQueryBuilderBase: AVQueryBuilder {
   fileprivate var symbol: String = ""
   fileprivate var periodicity: AVHistoricalTimeSeriesPeriodicity = .daily
-  fileprivate var isAdjusted: Bool = true
+  fileprivate var isAdjusted: Bool = false
   
-  override fileprivate init() {
+  fileprivate init(withAdjustedPrices: Bool = false) {
+    self.isAdjusted = withAdjustedPrices
+    
     super.init()
-  }
-  
-  public func setSymbol(_ symbol: String) -> Self {
-    self.symbol = symbol
-    return self
-  }
-  
-  public func setPeriodicity(_ periodicity: AVHistoricalTimeSeriesPeriodicity) -> Self {
-    self.periodicity = periodicity
-    return self
   }
   
   override public func timeSeriesFunction() -> String {
@@ -37,18 +58,7 @@ public class AVHistoricalStockPricesQueryBuilder<PriceType: Decodable>: AVQueryB
       : periodicity.standardFunction()
   }
   
-  public func withAdjustedPrices() -> AVHistoricalStockPricesQueryBuilder<AVHistoricalAdjustedStockPriceModel> {
-    let adjustedQuery: AVHistoricalStockPricesQueryBuilder<AVHistoricalAdjustedStockPriceModel> = self.copy()
-    adjustedQuery.isAdjusted = true
-    return adjustedQuery
-  }
-  
-}
-
-extension AVHistoricalStockPricesQueryBuilder: AVQueryBuilderProtocol {
-  typealias ModelType = PriceType
-  
-  internal func buildURL() -> URL {
+  open func buildURL() -> URL {
     let urlComponents = super.buildBaseURL()
     
     let symbolItem = URLQueryItem(name: "symbol", value: symbol)
@@ -56,17 +66,17 @@ extension AVHistoricalStockPricesQueryBuilder: AVQueryBuilderProtocol {
     urlComponents.queryItems?.append(symbolItem)
     return urlComponents.url!
   }
+  
 }
 
-// MARK - Copying
-
-extension AVHistoricalStockPricesQueryBuilder {
-  private func copy<NewType: Decodable>() -> AVHistoricalStockPricesQueryBuilder<NewType> {
-    let newBuilder = AVHistoricalStockPricesQueryBuilder<NewType>()
-    newBuilder.isAdjusted = isAdjusted
-    newBuilder.symbol = symbol
-    newBuilder.periodicity = periodicity
-    newBuilder.outputSize = outputSize
-    return newBuilder
+extension AVHistoricalStockPricesQueryBuilderBase: AVHistoricalStockPricesBuilderProtocol {
+  public func setSymbol(_ symbol: String) -> Self {
+    self.symbol = symbol
+    return self
+  }
+  
+  public func setPeriodicity(_ periodicity: AVHistoricalTimeSeriesPeriodicity) -> Self {
+    self.periodicity = periodicity
+    return self
   }
 }
