@@ -11,11 +11,31 @@ import UIKit
 class ViewController: UIViewController {
   private lazy var registrar = AVAPIKeyRegistrar()
   private lazy var isAdjusted = false
+  fileprivate lazy var periodicityOrdering = AVHistoricalTimeSeriesPeriodicity.ordering()
+  
+  fileprivate var selectedPeriodicity: AVHistoricalTimeSeriesPeriodicity {
+    return periodicityOrdering[periodicityPickerView.selectedRow(inComponent: 0)]
+  }
+  
+  @IBOutlet weak var periodicityPickerView: UIPickerView!
+  
+  // MARK: Lifecycle
   
   required init?(coder aDecoder: NSCoder) {
+    periodicityPickerView = UIPickerView()
+    
     super.init(coder: aDecoder)
     AVAPIKeyStore.sharedInstance.setAPIKey(apiKey: registrar.getAPIKey()!)
   }
+  
+  override func loadView() {
+    super.loadView()
+    
+    periodicityPickerView.delegate = self
+    periodicityPickerView.dataSource = self
+  }
+  
+  // MARK: Configuring behaviors
   
   @IBAction func addAPIKey(_ sender: Any) {
     registrar.requestUserInputAPIKey(forViewController: self)
@@ -33,15 +53,19 @@ class ViewController: UIViewController {
   @IBAction func fetchData()
   {
     if isAdjusted {
+      print("Fetch Adjusted")
       self.fetchAdjustedPrices()
     } else {
+      print("Fetch Standard")
       self.fetchStandardPrices()
     }
   }
   
   private func fetchAdjustedPrices() {
+    print("Periodicity: \(selectedPeriodicity)")
     AVHistoricalAdjustedStockPricesBuilder()
       .setSymbol("MSFT")
+      .setPeriodicity(selectedPeriodicity)
       .getResults { (stocks, error) in
         print(stocks as Any)
         print(error as Any)
@@ -49,12 +73,37 @@ class ViewController: UIViewController {
   }
   
   private func fetchStandardPrices() {
+    print("Periodicity: \(selectedPeriodicity)")
     AVHistoricalStockPricesBuilder()
       .setSymbol("MSFT")
+      .setPeriodicity(selectedPeriodicity)
       .getResults { (stocks, error) in
         print(stocks as Any)
         print(error as Any)
     }
+  }
+}
+
+// MARK: UIPickerViewDelegate
+
+extension ViewController: UIPickerViewDelegate {
+  public func pickerView(_ pickerView: UIPickerView,
+                          titleForRow row: Int,
+                          forComponent component: Int) -> String?
+  {
+    return periodicityOrdering[row].rawValue
+  }
+}
+
+// MARK: UIPickerViewDataSource
+
+extension ViewController: UIPickerViewDataSource {
+  func numberOfComponents(in pickerView: UIPickerView) -> Int {
+    return 1
+  }
+  
+  func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+    return periodicityOrdering.count
   }
 }
 
