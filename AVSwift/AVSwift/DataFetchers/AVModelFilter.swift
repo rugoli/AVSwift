@@ -8,29 +8,25 @@
 
 import UIKit
 
-public protocol AVModelFilter {
-  func filterStandard(_: AVHistoricalStockPriceModel) -> Bool
-  func filterAdjusted(_: AVHistoricalAdjustedStockPriceModel) -> Bool
-}
-
-public extension AVModelFilter {
-  func filterStandard(_: AVHistoricalStockPriceModel) -> Bool {
-    return true
-  }
-  
-  func filterAdjusted(_: AVHistoricalAdjustedStockPriceModel) -> Bool {
-    return true
-  }
-}
-
-public enum AVDateFilter {
+public enum AVDateFilter<T> {
   case after(Date)
   case before(Date)
   case between(Date, Date)
-}
-
-extension AVDateFilter: AVModelFilter {
-  public func filterStandard(_ model: AVHistoricalStockPriceModel) -> Bool {
+  
+  public func filter(_ model: T) -> Bool
+  {
+    switch model.self {
+    case is AVHistoricalStockPriceModel:
+      return filterStandard(model as! AVHistoricalStockPriceModel)
+    case is AVHistoricalAdjustedStockPriceModel :
+      return filterAdjusted(model as! AVHistoricalAdjustedStockPriceModel)
+    default:
+      return false
+    }
+  }
+  
+  private func filterStandard(_ model: AVHistoricalStockPriceModel) -> Bool
+  {
     switch self {
     case .after(let afterDate):
       return model.date >= afterDate
@@ -41,7 +37,8 @@ extension AVDateFilter: AVModelFilter {
     }
   }
   
-  public func filterAdjusted(_ model: AVHistoricalAdjustedStockPriceModel) -> Bool {
+  private func filterAdjusted(_ model: AVHistoricalAdjustedStockPriceModel) -> Bool
+  {
     switch self {
     case .after(let afterDate):
       return model.date >= afterDate
