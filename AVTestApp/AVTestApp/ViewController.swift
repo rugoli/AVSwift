@@ -83,10 +83,12 @@ class ViewController: UIViewController {
       .withFilter { model -> Bool in
         return model.close > 85.0
       }
-      .getResults { (stocks, error) in
-        print(stocks as Any)
-        print(error as Any)
-    }
+      .getResults(
+        config: AVStockFetcherConfiguration(fetchQueue: .global(qos: .userInitiated), callbackQueue: .main),
+        completion: { (stocks, error) in
+          print(stocks as Any)
+          print(error as Any)
+        })
   }
 }
 

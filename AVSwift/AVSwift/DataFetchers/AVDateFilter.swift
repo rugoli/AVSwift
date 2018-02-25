@@ -18,7 +18,7 @@ public enum AVDateFilter<T> {
     switch model.self {
     case is AVHistoricalStockPriceModel:
       return filterStandard(model as! AVHistoricalStockPriceModel)
-    case is AVHistoricalAdjustedStockPriceModel :
+    case is AVHistoricalAdjustedStockPriceModel:
       return filterAdjusted(model as! AVHistoricalAdjustedStockPriceModel)
     default:
       return false
