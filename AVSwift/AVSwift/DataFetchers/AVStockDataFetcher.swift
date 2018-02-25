@@ -11,6 +11,18 @@ import Foundation
 
 fileprivate let metadataKey: String = "Metadata"
 public typealias ModelFilter<T> = (T) -> Bool
+public typealias ParsedStockCompletion<M> = ([M]?, Error?) -> Void
+
+public struct AVStockFetcherConfiguration {
+  let fetchQueue: DispatchQueue
+  let callbackQueue: DispatchQueue
+  
+  public init(fetchQueue: DispatchQueue = DispatchQueue.global(qos: .userInitiated),
+              callbackQueue: DispatchQueue = DispatchQueue.main) {
+    self.fetchQueue = fetchQueue
+    self.callbackQueue = callbackQueue
+  }
+}
 
 public class AVStockDataFetcher<ModelType: Decodable>: NSObject {
   let url: URL
@@ -23,10 +35,10 @@ public class AVStockDataFetcher<ModelType: Decodable>: NSObject {
     super.init()
   }
   
-  public func getResults(completion: @escaping ([ModelType]?, Error?) -> Void) {
+  public func getResults(completion: @escaping ParsedStockCompletion<ModelType>, config: AVStockFetcherConfiguration = AVStockFetcherConfiguration()) {
     let url = self.url
     let modelFilters = self.filters
-    DispatchQueue.global(qos: .userInitiated).async {
+    config.fetchQueue.async {
       do {
         let timeSeries = try AVStockDataFetcher.fetchData(forURL: url)
         let parsed: [ModelType]? = timeSeries.flatMap({ (key, value) in
@@ -37,13 +49,13 @@ public class AVStockDataFetcher<ModelType: Decodable>: NSObject {
             guard AVStockDataFetcher.evaluateFilterChain(model: element, forFilters: modelFilters) else { return nil }
             return element
           } catch {
-            completion(nil, error)
+            config.callbackQueue.executeCallback { completion(nil, error) }
           }
           return nil
         })
-        completion(parsed, nil)
+        config.callbackQueue.executeCallback { completion(parsed, nil) }
       } catch {
-        completion(nil, error)
+        config.callbackQueue.executeCallback { completion(nil, error) }
       }
     }
   }
@@ -81,5 +93,12 @@ public class AVStockDataFetcher<ModelType: Decodable>: NSObject {
       throw AVDataFetchingError.noJSONSerialization
     }
     return result
+  }
+}
+
+extension DispatchQueue {
+  fileprivate func executeCallback(_ callback: @escaping () -> ())
+  {
+    self.async { callback() }
   }
 }
