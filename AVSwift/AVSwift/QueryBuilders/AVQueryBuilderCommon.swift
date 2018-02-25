@@ -13,23 +13,25 @@ protocol AVQueryBuilderProtocol: class {
   
   func buildURL() -> URL
   
+  var modelFilters: [ModelFilter<ModelType>] { get }
+  
   func getResults(completion: ([ModelType]?, Error?) -> Void)
   func getRawResults(completion: (NSDictionary) -> Void)
 }
 
 extension AVQueryBuilderProtocol {
   
-  private func build() -> AVStockDataFetcher<ModelType> {
-    return AVStockDataFetcher<ModelType>(url: self.buildURL())
+  private func build(withFilters filters: [ModelFilter<ModelType>]) -> AVStockDataFetcher<ModelType> {
+    return AVStockDataFetcher<ModelType>(url: self.buildURL(), filters: filters)
   }
   
   // convenience methods to go straight from the query builder to the results
   public func getResults(completion: ([ModelType]?, Error?) -> Void) {
-    self.build().getResults(completion: completion)
+    self.build(withFilters: self.modelFilters).getResults(completion: completion)
   }
   
   public func getRawResults(completion: (NSDictionary) -> Void) {
-    self.build().getRawResults(completion: completion)
+    self.build(withFilters: self.modelFilters).getRawResults(completion: completion)
   }
 }
 

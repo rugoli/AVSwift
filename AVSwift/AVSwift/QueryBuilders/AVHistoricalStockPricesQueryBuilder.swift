@@ -63,26 +63,36 @@ extension AVHistoricalStockPricesQueryBuilderBase: AVHistoricalStockPricesBuilde
 
 public class AVHistoricalStandardStockPricesBuilder: AVHistoricalStockPricesQueryBuilderBase {
   
+  public typealias ModelType = AVHistoricalStockPriceModel
+  var modelFilters: [ModelFilter<ModelType>] = []
+  
   public init() {
     super.init(withAdjustedPrices: false)
   }
+  
+  public func withFilter(_ filter: @escaping ModelFilter<ModelType>) -> Self {
+    modelFilters.append(filter)
+    return self
+  }
 }
 
-extension AVHistoricalStandardStockPricesBuilder: AVQueryBuilderProtocol
-{
-  typealias ModelType = AVHistoricalStockPriceModel
-}
+extension AVHistoricalStandardStockPricesBuilder: AVQueryBuilderProtocol {}
 
 // MARK: AVHistoricalAdjustedStockPricesBuilder
 
 public class AVHistoricalAdjustedStockPricesBuilder: AVHistoricalStockPricesQueryBuilderBase {
   
+  public typealias ModelType = AVHistoricalAdjustedStockPriceModel
+  var modelFilters: [ModelFilter<ModelType>] = []
+  
   public init() {
     super.init(withAdjustedPrices: true)
   }
+  
+  public func withFilter(_ filter: @escaping ModelFilter<ModelType>) -> Self {
+    modelFilters.append(filter)
+    return self
+  }
 }
 
-extension AVHistoricalAdjustedStockPricesBuilder: AVQueryBuilderProtocol
-{
-  typealias ModelType = AVHistoricalAdjustedStockPriceModel
-}
+extension AVHistoricalAdjustedStockPricesBuilder: AVQueryBuilderProtocol {}

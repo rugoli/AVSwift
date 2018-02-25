@@ -10,12 +10,15 @@ import UIKit
 import Foundation
 
 fileprivate let metadataKey: String = "Metadata"
+public typealias ModelFilter<T> = (T) -> Bool
 
 public class AVStockDataFetcher<ModelType: Decodable>: NSObject {
   let url: URL
+  let filters: [ModelFilter<ModelType>]
   
-  public init(url: URL) {
+  public init(url: URL, filters: [ModelFilter<ModelType>] = []) {
     self.url = url
+    self.filters = filters
     
     super.init()
   }
@@ -23,11 +26,13 @@ public class AVStockDataFetcher<ModelType: Decodable>: NSObject {
   public func getResults(completion: ([ModelType]?, Error?) -> Void) {
     do {
       let timeSeries = try fetchData()
-      let parsed: [ModelType]? = timeSeries.flatMap({ (key, value) in
+      let parsed: [ModelType]? = timeSeries.flatMap({ [weak self] (key, value) in
+        guard let `self` = self else { return nil }
         var mutableDict = value
         mutableDict["date"] = key
         do {
           let element = try JSONDecoder().decode(ModelType.self, from: JSONSerialization.data(withJSONObject: mutableDict, options: .prettyPrinted))
+          guard self.evaluateFilterChain(model: element) else { return nil }
           return element
         } catch {
           completion(nil, error)
@@ -45,6 +50,14 @@ public class AVStockDataFetcher<ModelType: Decodable>: NSObject {
   }
   
   // MARK - Private
+  
+  private func evaluateFilterChain(model: ModelType) -> Bool {
+    for filter in filters {
+      guard filter(model) else { return false }
+    }
+    
+    return true
+  }
   
   private func fetchData() throws -> [String: [String: String]] {
     let data = try Data.init(contentsOf: url)
