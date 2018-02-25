@@ -74,13 +74,15 @@ class ViewController: UIViewController {
   
   private func fetchStandardPrices() {
     print("Periodicity: \(selectedPeriodicity)")
-    let date = try! Date.from(month: 1, day: 1, year: 2018)
+    let beginDate = try! Date.from(month: 11, day: 1, year: 2017)
+    let endDate = try! Date.from(month: 1, day: 1, year: 2018)
     AVHistoricalStandardStockPricesBuilder()
       .setSymbol("MSFT")
       .setPeriodicity(selectedPeriodicity)
-      .withFilter({ model -> Bool in
-        return model.date > date
-      })
+      .withDateFilter(AVDateFilter.between(beginDate, endDate))
+      .withFilter { model -> Bool in
+        return model.close > 85.0
+      }
       .getResults { (stocks, error) in
         print(stocks as Any)
         print(error as Any)

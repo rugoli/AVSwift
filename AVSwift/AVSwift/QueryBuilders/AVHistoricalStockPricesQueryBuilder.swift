@@ -8,13 +8,6 @@
 
 import UIKit
 
-// MARK: AVHistoricalStockPricesBuilderProtocol
-
-public protocol AVHistoricalStockPricesBuilderProtocol : AVQueryBuilderBase {
-  func setSymbol(_ symbol: String) -> Self
-  func setPeriodicity(_ periodicity: AVHistoricalTimeSeriesPeriodicity) -> Self
-}
-
 // MARK: AVHistoricalStockPricesQueryBuilderBase
 
 public class AVHistoricalStockPricesQueryBuilderBase: AVQueryBuilder {
@@ -61,15 +54,17 @@ extension AVHistoricalStockPricesQueryBuilderBase: AVHistoricalStockPricesBuilde
 
 // MARK: AVHistoricalStandardStockPricesBuilder
 
-public class AVHistoricalStandardStockPricesBuilder: AVHistoricalStockPricesQueryBuilderBase {
+public final class AVHistoricalStandardStockPricesBuilder: AVHistoricalStockPricesQueryBuilderBase {
   
   public typealias ModelType = AVHistoricalStockPriceModel
-  var modelFilters: [ModelFilter<ModelType>] = []
+  internal var modelFilters: [ModelFilter<ModelType>] = []
   
   public init() {
     super.init(withAdjustedPrices: false)
   }
-  
+}
+
+extension AVHistoricalStandardStockPricesBuilder: AVHistoricalStockPricesFiltering {
   public func withFilter(_ filter: @escaping ModelFilter<ModelType>) -> Self {
     modelFilters.append(filter)
     return self
@@ -80,19 +75,22 @@ extension AVHistoricalStandardStockPricesBuilder: AVQueryBuilderProtocol {}
 
 // MARK: AVHistoricalAdjustedStockPricesBuilder
 
-public class AVHistoricalAdjustedStockPricesBuilder: AVHistoricalStockPricesQueryBuilderBase {
+public final class AVHistoricalAdjustedStockPricesBuilder: AVHistoricalStockPricesQueryBuilderBase {
   
   public typealias ModelType = AVHistoricalAdjustedStockPriceModel
-  var modelFilters: [ModelFilter<ModelType>] = []
+  internal var modelFilters: [ModelFilter<ModelType>] = []
   
   public init() {
     super.init(withAdjustedPrices: true)
   }
+}
+
+extension AVHistoricalAdjustedStockPricesBuilder: AVHistoricalStockPricesFiltering {
   
   public func withFilter(_ filter: @escaping ModelFilter<ModelType>) -> Self {
     modelFilters.append(filter)
     return self
   }
+  
 }
-
 extension AVHistoricalAdjustedStockPricesBuilder: AVQueryBuilderProtocol {}
