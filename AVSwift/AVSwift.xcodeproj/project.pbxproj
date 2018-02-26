@@ -24,6 +24,7 @@
 		01732ED820301503002FDB91 /* AVModelParsingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01732ED720301503002FDB91 /* AVModelParsingError.swift */; };
 		01C4F47F2043603E00A2226E /* AVDateFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C4F47E2043603E00A2226E /* AVDateFilter.swift */; };
 		01C4F4832043722E00A2226E /* AVHistoricalStockPriceQueryProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C4F4822043722E00A2226E /* AVHistoricalStockPriceQueryProtocols.swift */; };
+		01C4F4872043C7AD00A2226E /* AVDateOrderable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C4F4862043C7AD00A2226E /* AVDateOrderable.swift */; };
 		01F36D50200B094C00512ABC /* AVAPIKeyRegistrar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F36D4F200B094C00512ABC /* AVAPIKeyRegistrar.swift */; };
 /* End PBXBuildFile section */
 
@@ -48,6 +49,7 @@
 		01732ED720301503002FDB91 /* AVModelParsingError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVModelParsingError.swift; sourceTree = "<group>"; };
 		01C4F47E2043603E00A2226E /* AVDateFilter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AVDateFilter.swift; path = AVSwift/DataFetchers/AVDateFilter.swift; sourceTree = SOURCE_ROOT; };
 		01C4F4822043722E00A2226E /* AVHistoricalStockPriceQueryProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVHistoricalStockPriceQueryProtocols.swift; sourceTree = "<group>"; };
+		01C4F4862043C7AD00A2226E /* AVDateOrderable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVDateOrderable.swift; sourceTree = "<group>"; };
 		01F36D4F200B094C00512ABC /* AVAPIKeyRegistrar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVAPIKeyRegistrar.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -144,6 +146,7 @@
 		0172A6812002D954006EF18D /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				01C4F4862043C7AD00A2226E /* AVDateOrderable.swift */,
 				01732ED3202FDEB4002FDB91 /* AVHistoricalAdjustedStockPriceModel.swift */,
 				0172A6822002D98A006EF18D /* AVHistoricalStockPriceModel.swift */,
 				01732ED720301503002FDB91 /* AVModelParsingError.swift */,
@@ -285,6 +288,7 @@
 				01F36D50200B094C00512ABC /* AVAPIKeyRegistrar.swift in Sources */,
 				01C4F4832043722E00A2226E /* AVHistoricalStockPriceQueryProtocols.swift in Sources */,
 				01732EC720243838002FDB91 /* AVDescriptionHelper.swift in Sources */,
+				01C4F4872043C7AD00A2226E /* AVDateOrderable.swift in Sources */,
 				0144105D1FFC54AB00B5675B /* AVQueryBuilderCommon.swift in Sources */,
 				01732ED820301503002FDB91 /* AVModelParsingError.swift in Sources */,
 				01732ED4202FDEB5002FDB91 /* AVHistoricalAdjustedStockPriceModel.swift in Sources */,

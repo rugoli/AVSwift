@@ -63,9 +63,11 @@ class ViewController: UIViewController {
   
   private func fetchAdjustedPrices() {
     print("Periodicity: \(selectedPeriodicity)")
+    let beginDate = try! Date.from(month: 12, day: 1, year: 2017)
     AVHistoricalAdjustedStockPricesBuilder()
       .setSymbol("MSFT")
       .setPeriodicity(selectedPeriodicity)
+      .withDateFilter(AVDateFilter.after(beginDate))
       .getResults { (stocks, error) in
         print(stocks as Any)
         print(error as Any)
@@ -80,9 +82,6 @@ class ViewController: UIViewController {
       .setSymbol("MSFT")
       .setPeriodicity(selectedPeriodicity)
       .withDateFilter(AVDateFilter.between(beginDate, endDate))
-      .withFilter { model -> Bool in
-        return model.close > 85.0
-      }
       .getResults(
         config: AVStockFetcherConfiguration(fetchQueue: .global(qos: .userInitiated), callbackQueue: .main),
         completion: { (stocks, error) in
