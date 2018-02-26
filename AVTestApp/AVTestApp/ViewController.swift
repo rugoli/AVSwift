@@ -76,8 +76,8 @@ class ViewController: UIViewController {
   
   private func fetchStandardPrices() {
     print("Periodicity: \(selectedPeriodicity)")
-    let beginDate = try! Date.from(month: 11, day: 1, year: 2017)
-    let endDate = try! Date.from(month: 1, day: 1, year: 2018)
+    let beginDate = try! Date.from(month: 11, day: 1, year: 2003)
+    let endDate = try! Date.from(month: 1, day: 1, year: 2005)
     AVHistoricalStandardStockPricesBuilder()
       .setSymbol("MSFT")
       .setPeriodicity(selectedPeriodicity)
