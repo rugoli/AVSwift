@@ -10,15 +10,16 @@ import UIKit
 
 // MARK: AVHistoricalStockPricesBuilderProtocol
 
-public protocol AVHistoricalStockPricesBuilderProtocol : class, AVQueryBuilderBase {
+protocol AVHistoricalStockPricesBuilderProtocol : class, AVQueryBuilderBase {
   func setSymbol(_ symbol: String) -> Self
   func setPeriodicity(_ periodicity: AVHistoricalTimeSeriesPeriodicity) -> Self
 }
 
 // MARK: AVHistoricalStockPricesFiltering
 
-public protocol AVHistoricalStockPricesFiltering: class {
+protocol AVHistoricalStockPricesFiltering: class {
   associatedtype ModelType
+  var hasDateFilter: Bool { get set }
   
   func withFilter(_ filter: @escaping ModelFilter<ModelType>) -> Self
   func withDateFilter(_ dateFilter: AVDateFilter<ModelType>) -> Self
@@ -27,6 +28,7 @@ public protocol AVHistoricalStockPricesFiltering: class {
 extension AVHistoricalStockPricesFiltering {
   public func withDateFilter(_ dateFilter: AVDateFilter<ModelType>) -> Self
   {
+    hasDateFilter = true
     return withFilter(dateFilter.filter)
   }
 }

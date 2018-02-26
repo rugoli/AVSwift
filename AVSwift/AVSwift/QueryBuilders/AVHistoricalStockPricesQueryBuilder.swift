@@ -58,6 +58,13 @@ public final class AVHistoricalStandardStockPricesBuilder: AVHistoricalStockPric
   
   public typealias ModelType = AVHistoricalStockPriceModel
   internal var modelFilters: [ModelFilter<ModelType>] = []
+  internal var hasDateFilter: Bool = false {
+    didSet {
+      if hasDateFilter {
+        self.outputSize = .full
+      }
+    }
+  }
   
   public init() {
     super.init(withAdjustedPrices: false)
@@ -79,6 +86,13 @@ public final class AVHistoricalAdjustedStockPricesBuilder: AVHistoricalStockPric
   
   public typealias ModelType = AVHistoricalAdjustedStockPriceModel
   internal var modelFilters: [ModelFilter<ModelType>] = []
+  internal var hasDateFilter: Bool = false {
+    didSet {
+      if hasDateFilter {
+        self.outputSize = .full
+      }
+    }
+  }
   
   public init() {
     super.init(withAdjustedPrices: true)
