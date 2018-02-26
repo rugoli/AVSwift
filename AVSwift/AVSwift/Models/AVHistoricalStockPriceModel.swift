@@ -9,12 +9,12 @@
 import UIKit
 
 public final class AVHistoricalStockPriceModel: CustomStringConvertible, AVObjectDescription {
-  let date: Date
-  let open: Float
-  let high: Float
-  let low: Float
-  let close: Float
-  let volume: Int
+  public let date: Date
+  public let open: Float
+  public let high: Float
+  public let low: Float
+  public let close: Float
+  public let volume: Int
   
   required public init(date: Date,
                 open: Float,
@@ -61,3 +61,5 @@ extension AVHistoricalStockPriceModel: Decodable {
     }
   }
 }
+
+extension AVHistoricalStockPriceModel: AVDateOrderable {}

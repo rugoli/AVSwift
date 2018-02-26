@@ -24,7 +24,7 @@ public struct AVStockFetcherConfiguration {
   }
 }
 
-public class AVStockDataFetcher<ModelType: Decodable>: NSObject {
+public class AVStockDataFetcher<ModelType: Decodable & AVDateOrderable>: NSObject {
   let url: URL
   let filters: [ModelFilter<ModelType>]
   
@@ -41,7 +41,7 @@ public class AVStockDataFetcher<ModelType: Decodable>: NSObject {
     config.fetchQueue.async {
       do {
         let timeSeries = try AVStockDataFetcher.fetchData(forURL: url)
-        let parsed: [ModelType]? = timeSeries.flatMap({ (key, value) in
+        let parsed: [ModelType] = timeSeries.flatMap({ (key, value) in
           var mutableDict = value
           mutableDict["date"] = key
           do {
@@ -52,7 +52,10 @@ public class AVStockDataFetcher<ModelType: Decodable>: NSObject {
             config.callbackQueue.executeCallback { completion(nil, error) }
           }
           return nil
-        })
+        }).sorted { model1, model2 -> Bool in
+          return model1.date < model2.date
+        }
+        
         config.callbackQueue.executeCallback { completion(parsed, nil) }
       } catch {
         config.callbackQueue.executeCallback { completion(nil, error) }
