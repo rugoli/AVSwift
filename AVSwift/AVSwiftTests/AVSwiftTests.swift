@@ -16,15 +16,12 @@ class AVSwiftTests: XCTestCase {
   }
   
   func testBuilders() {
-    let testBuilder = AVHistoricalStockPricesBuilder()
-    let fetcher = testBuilder
+    let testBuilder = AVHistoricalStandardStockPricesBuilder()
+    testBuilder
       .setOuputSize(.full)
       .setSymbol("MSFT")
-      .build()
-    fetcher.getResults { results, error in
-      print(results)
-    }
-    XCTAssertNotNil(testBuilder)
-    XCTAssertNotNil(fetcher)
+      .getResults { results, error in
+        XCTAssertTrue(error == nil && results != nil)
+      }
   }
 }

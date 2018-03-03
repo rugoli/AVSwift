@@ -41,20 +41,14 @@ public class AVStockDataFetcher<ModelType: Decodable & AVDateOrderable>: NSObjec
     config.fetchQueue.async {
       do {
         let timeSeries = try AVStockDataFetcher.fetchData(forURL: url)
-        let parsed: [ModelType] = timeSeries.flatMap({ (key, value) in
-          var mutableDict = value
-          mutableDict["date"] = key
-          do {
-            let element = try JSONDecoder().decode(ModelType.self, from: JSONSerialization.data(withJSONObject: mutableDict, options: .prettyPrinted))
-            guard AVStockDataFetcher.evaluateFilterChain(model: element, forFilters: modelFilters) else { return nil }
-            return element
-          } catch {
-            config.callbackQueue.executeCallback { completion(nil, error) }
+        let parsed = AVStockDataFetcher.serialParsing(
+          input: timeSeries,
+          modelFilters: modelFilters,
+          config: config)
+          .flatMap({ $0 })
+          .sorted { model1, model2 -> Bool in
+            return model1.date < model2.date
           }
-          return nil
-        }).sorted { model1, model2 -> Bool in
-          return model1.date < model2.date
-        }
         
         config.callbackQueue.executeCallback { completion(parsed, nil) }
       } catch {
@@ -62,6 +56,7 @@ public class AVStockDataFetcher<ModelType: Decodable & AVDateOrderable>: NSObjec
       }
     }
   }
+
   
   public func getRawResults(completion: (NSDictionary) -> Void) {
     // no-op
@@ -69,7 +64,31 @@ public class AVStockDataFetcher<ModelType: Decodable & AVDateOrderable>: NSObjec
   
   // MARK - Private
   
-  private static func evaluateFilterChain(model: ModelType, forFilters filters: [ModelFilter<ModelType>]) -> Bool {
+  internal func concurrentParsing(input: [String: [String: String]], callback: ([ModelType]?, Error) -> Void) {
+    
+  }
+  
+  internal static func serialParsing<ModelType: Decodable & AVDateOrderable>(
+    input: [String: [String: String]],
+    modelFilters: [ModelFilter<ModelType>] = [],
+    config: AVStockFetcherConfiguration = AVStockFetcherConfiguration()) -> [ModelType?]
+  {
+    return input.flatMap({ (key, value) in
+      var mutableDict = value
+      mutableDict["date"] = key
+      do {
+        let element = try JSONDecoder().decode(ModelType.self, from: JSONSerialization.data(withJSONObject: mutableDict, options: .prettyPrinted))
+        guard AVStockDataFetcher.evaluateFilterChain(model: element, forFilters: modelFilters) else { return nil }
+        return element
+      } catch {
+        return nil
+      }
+    })
+  }
+  
+  
+//callback: @escaping ([ModelType]?, Error) -> Void
+  internal static func evaluateFilterChain<ModelType>(model: ModelType, forFilters filters: [ModelFilter<ModelType>]) -> Bool {
     for filter in filters {
       guard filter(model) else { return false }
     }
