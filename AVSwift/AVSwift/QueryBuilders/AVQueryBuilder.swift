@@ -14,7 +14,7 @@ public enum AVOutputSize: String {
 }
 
 public protocol AVQueryBuilderBase {
-  func setOuputSize(_ outputSize: AVOutputSize) -> Self
+  func setOutputSize(_ outputSize: AVOutputSize) -> Self
 }
 
 public class AVQueryBuilder: NSObject {
@@ -47,7 +47,7 @@ public class AVQueryBuilder: NSObject {
     return urlComponents
   }
   
-  public func setOuputSize(_ outputSize: AVOutputSize) -> Self {
+  public func setOutputSize(_ outputSize: AVOutputSize) -> Self {
     self.outputSize = outputSize
     return self
   }
