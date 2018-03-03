@@ -12,6 +12,9 @@ import Foundation
 fileprivate let metadataKey: String = "Metadata"
 public typealias ModelFilter<T> = (T) -> Bool
 public typealias ParsedStockCompletion<M> = ([M]?, Error?) -> Void
+public typealias UnparsedStockResults = [String: [String: String]]
+public typealias UnparsedStockCompletion = (UnparsedStockResults?, Error?) -> Void
+
 
 public struct AVStockFetcherConfiguration {
   let fetchQueue: DispatchQueue
@@ -35,41 +38,63 @@ public class AVStockDataFetcher<ModelType: Decodable & AVDateOrderable>: NSObjec
     super.init()
   }
   
-  public func getResults(completion: @escaping ParsedStockCompletion<ModelType>, config: AVStockFetcherConfiguration = AVStockFetcherConfiguration()) {
-    let url = self.url
-    let modelFilters = self.filters
-    config.fetchQueue.async {
-      do {
-        let timeSeries = try AVStockDataFetcher.fetchData(forURL: url)
-        let parsed = AVStockDataFetcher.serialParsing(
-          input: timeSeries,
-          modelFilters: modelFilters,
-          config: config)
-          .flatMap({ $0 })
-          .sorted { model1, model2 -> Bool in
-            return model1.date < model2.date
+  public func getResults(config:  AVStockFetcherConfiguration = AVStockFetcherConfiguration(),
+                         completion: @escaping ParsedStockCompletion<ModelType>)
+  {
+    let modelFilters = filters
+    AVStockDataFetcher.fetchDataAsync(
+      forURL: url,
+      withFetchConfig: config,
+      completionBlock: { results, error in
+        if let results = results, error == nil {
+          let parsed = AVStockDataFetcher.serialParsing(
+            input: results,
+            modelFilters: modelFilters,
+            config: config)
+            .flatMap{ $0 }
+            .sorted { model1, model2 -> Bool in
+              return model1.date < model2.date
           }
-        
-        config.callbackQueue.executeCallback { completion(parsed, nil) }
-      } catch {
-        config.callbackQueue.executeCallback { completion(nil, error) }
-      }
-    }
+          config.callbackQueue.executeCallback { completion(parsed, nil) }
+        } else {
+          completion(nil, error)
+        }
+    })
   }
 
   
-  public func getRawResults(completion: (NSDictionary) -> Void) {
-    // no-op
+  public func getRawResults(
+    config:  AVStockFetcherConfiguration = AVStockFetcherConfiguration(),
+    completion: @escaping UnparsedStockCompletion)
+  {
+    AVStockDataFetcher.fetchDataAsync(
+      forURL: url,
+      withFetchConfig: config,
+      completionBlock: completion)
   }
   
   // MARK - Private
   
-  internal func concurrentParsing(input: [String: [String: String]], callback: ([ModelType]?, Error) -> Void) {
+  internal static func fetchDataAsync(forURL url: URL,
+                                      withFetchConfig config: AVStockFetcherConfiguration,
+                                      completionBlock: @escaping UnparsedStockCompletion)
+  {
+    config.fetchQueue.async {
+      do {
+        let timeSeries = try AVStockDataFetcher.fetchData(forURL: url)
+        completionBlock(timeSeries, nil)
+      } catch {
+        completionBlock(nil, error)
+      }
+    }
+  }
+  
+  internal func concurrentParsing(input: UnparsedStockCompletion, callback: ([ModelType]?, Error) -> Void) {
     
   }
   
   internal static func serialParsing<ModelType: Decodable & AVDateOrderable>(
-    input: [String: [String: String]],
+    input: UnparsedStockResults,
     modelFilters: [ModelFilter<ModelType>] = [],
     config: AVStockFetcherConfiguration = AVStockFetcherConfiguration()) -> [ModelType?]
   {
@@ -87,7 +112,6 @@ public class AVStockDataFetcher<ModelType: Decodable & AVDateOrderable>: NSObjec
   }
   
   
-//callback: @escaping ([ModelType]?, Error) -> Void
   internal static func evaluateFilterChain<ModelType>(model: ModelType, forFilters filters: [ModelFilter<ModelType>]) -> Bool {
     for filter in filters {
       guard filter(model) else { return false }
@@ -96,7 +120,7 @@ public class AVStockDataFetcher<ModelType: Decodable & AVDateOrderable>: NSObjec
     return true
   }
   
-  private static func fetchData(forURL url: URL) throws -> [String: [String: String]] {
+  private static func fetchData(forURL url: URL) throws -> UnparsedStockResults {
     let data = try Data.init(contentsOf: url)
     let json = try JSONSerialization.jsonObject(with: data, options: .mutableLeaves) as! [String: Any]
     
@@ -111,7 +135,7 @@ public class AVStockDataFetcher<ModelType: Decodable & AVDateOrderable>: NSObjec
     guard let timeSeriesKey = dataKey else {
       throw AVDataFetchingError.timeSeriesKeyMissing
     }
-    guard let result = json[timeSeriesKey] as? [String : [String: String]] else {
+    guard let result = json[timeSeriesKey] as? UnparsedStockResults else {
       throw AVDataFetchingError.noJSONSerialization
     }
     return result

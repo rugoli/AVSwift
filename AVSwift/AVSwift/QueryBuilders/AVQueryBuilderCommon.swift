@@ -15,8 +15,12 @@ protocol AVQueryBuilderProtocol: class {
   
   var modelFilters: [ModelFilter<ModelType>] { get }
   
-  func getResults(config: AVStockFetcherConfiguration, completion: @escaping ([ModelType]?, Error?) -> Void)
-  func getRawResults(completion: @escaping (NSDictionary) -> Void)
+  func getResults(
+    config: AVStockFetcherConfiguration,
+    completion: @escaping ([ModelType]?, Error?) -> Void)
+  func getRawResults(
+    config: AVStockFetcherConfiguration,
+    completion: @escaping ([String: [String: String]]?, Error?) -> Void)
 }
 
 extension AVQueryBuilderProtocol {
@@ -26,12 +30,18 @@ extension AVQueryBuilderProtocol {
   }
   
   // convenience methods to go straight from the query builder to the results
-  public func getResults(config: AVStockFetcherConfiguration = AVStockFetcherConfiguration(), completion: @escaping ParsedStockCompletion<ModelType>) {
-    self.build(withFilters: self.modelFilters).getResults(completion: completion, config: config)
+  public func getResults(
+    config: AVStockFetcherConfiguration = AVStockFetcherConfiguration(),
+    completion: @escaping ParsedStockCompletion<ModelType>)
+  {
+    self.build(withFilters: self.modelFilters).getResults(config: config, completion: completion)
   }
   
-  public func getRawResults(completion: @escaping (NSDictionary) -> Void) {
-    self.build(withFilters: self.modelFilters).getRawResults(completion: completion)
+  public func getRawResults(
+    config: AVStockFetcherConfiguration = AVStockFetcherConfiguration(),
+    completion: @escaping ([String: [String: String]]?, Error?) -> Void)
+  {
+    self.build(withFilters: self.modelFilters).getRawResults(config: config, completion: completion)
   }
 }
 
