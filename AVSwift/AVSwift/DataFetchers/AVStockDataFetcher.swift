@@ -29,9 +29,9 @@ public struct AVStockFetcherConfiguration {
 
 public class AVStockDataFetcher<ModelType: Decodable & AVDateOrderable>: NSObject {
   let url: URL
-  let filters: [ModelFilter<ModelType>]
+  let filters: [ModelFilter<ModelType>]?
   
-  public init(url: URL, filters: [ModelFilter<ModelType>] = []) {
+  public init(url: URL, filters: [ModelFilter<ModelType>]? = nil) {
     self.url = url
     self.filters = filters
     
@@ -93,9 +93,9 @@ public class AVStockDataFetcher<ModelType: Decodable & AVDateOrderable>: NSObjec
     
   }
   
-  internal static func serialParsing<ModelType: Decodable & AVDateOrderable>(
+  internal static func serialParsing(
     input: UnparsedStockResults,
-    modelFilters: [ModelFilter<ModelType>] = [],
+    modelFilters: [ModelFilter<ModelType>]?,
     config: AVStockFetcherConfiguration = AVStockFetcherConfiguration()) -> [ModelType?]
   {
     return input.flatMap({ (key, value) in
@@ -112,7 +112,8 @@ public class AVStockDataFetcher<ModelType: Decodable & AVDateOrderable>: NSObjec
   }
   
   
-  internal static func evaluateFilterChain<ModelType>(model: ModelType, forFilters filters: [ModelFilter<ModelType>]) -> Bool {
+  internal static func evaluateFilterChain<ModelType>(model: ModelType, forFilters filters: [ModelFilter<ModelType>]?) -> Bool {
+    guard let filters = filters else { return true }
     for filter in filters {
       guard filter(model) else { return false }
     }
