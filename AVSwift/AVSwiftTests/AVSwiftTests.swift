@@ -69,7 +69,7 @@ class AVSwiftTests: XCTestCase {
     XCTAssertNotNil(testResults)
     
     self.measure {
-      let _ = AVStockDataFetcher<AVHistoricalStockPriceModel>.concurrentParsing(
+      let _ = try! ConcurrentParser<AVHistoricalStockPriceModel>.parse(
         input: testResults!,
         withFilters: [],
         config: AVStockFetcherConfiguration())
