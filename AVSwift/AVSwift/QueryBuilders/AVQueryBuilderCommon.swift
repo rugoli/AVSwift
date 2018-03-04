@@ -39,7 +39,7 @@ extension AVQueryBuilderProtocol {
   
   public func getRawResults(
     config: AVStockFetcherConfiguration = AVStockFetcherConfiguration(),
-    completion: @escaping ([String: [String: String]]?, Error?) -> Void)
+    completion: @escaping UnparsedStockCompletion)
   {
     self.build(withFilters: self.modelFilters).getRawResults(config: config, completion: completion)
   }
