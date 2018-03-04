@@ -21,7 +21,7 @@ public struct AVStockFetcherConfiguration {
   let callbackQueue: DispatchQueue
   
   public init(fetchQueue: DispatchQueue = DispatchQueue.global(qos: .userInitiated),
-              callbackQueue: DispatchQueue = DispatchQueue.main) {
+              callbackQueue: DispatchQueue = DispatchQueue.global(qos: .userInitiated)) {
     self.fetchQueue = fetchQueue
     self.callbackQueue = callbackQueue
   }
@@ -68,7 +68,9 @@ public class AVStockDataFetcher<ModelType: Decodable & AVDateOrderable>: NSObjec
     AVStockDataFetcher.fetchDataAsync(
       forURL: url,
       withFetchConfig: config,
-      completionBlock: completion)
+      completionBlock: { results, error in
+        config.callbackQueue.executeCallback { completion(results, error) }
+    })
   }
   
   // MARK - Internal
