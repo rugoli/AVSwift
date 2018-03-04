@@ -79,7 +79,7 @@ class AVSwiftTests: XCTestCase {
   func testBetweenDateFilters()
   {
     let queue = DispatchQueue(label: "myQueue")
-    var testResults: [AVHistoricalStockPriceModel]? = nil
+    var testResults: AVStockResults<AVHistoricalStockPriceModel>? = nil
     
     queue.sync {
       AVHistoricalStandardStockPricesBuilder()
@@ -93,7 +93,7 @@ class AVSwiftTests: XCTestCase {
     }
     XCTAssertNotNil(testResults)
     
-    let filtered = testResults?.filter {
+    let filtered = testResults?.timeSeries.filter {
       $0.date < startDate || $0.date > endDate
     }
     XCTAssertTrue(filtered?.count == 0)
@@ -102,7 +102,7 @@ class AVSwiftTests: XCTestCase {
   func testCustomFilters()
   {
     let queue = DispatchQueue(label: "myQueue")
-    var testResults: [AVHistoricalStockPriceModel]? = nil
+    var testResults: AVStockResults<AVHistoricalStockPriceModel>? = nil
     
     queue.sync {
       AVHistoricalStandardStockPricesBuilder()
@@ -118,7 +118,7 @@ class AVSwiftTests: XCTestCase {
     }
     XCTAssertNotNil(testResults)
     
-    let filtered = testResults?.filter {
+    let filtered = testResults?.timeSeries.filter {
       $0.open <= $0.close
     }
     XCTAssertTrue(filtered?.count == 0)
