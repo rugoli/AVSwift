@@ -19,11 +19,14 @@ public typealias UnparsedStockCompletion = (UnparsedStockResults?, Error?) -> Vo
 public struct AVStockFetcherConfiguration {
   let fetchQueue: DispatchQueue
   let callbackQueue: DispatchQueue
+  let failOnParsingError: Bool
   
   public init(fetchQueue: DispatchQueue = DispatchQueue.global(qos: .userInitiated),
-              callbackQueue: DispatchQueue = DispatchQueue.global(qos: .userInitiated)) {
+              callbackQueue: DispatchQueue = DispatchQueue.global(qos: .userInitiated),
+              failOnParsingError: Bool = false) {
     self.fetchQueue = fetchQueue
     self.callbackQueue = callbackQueue
+    self.failOnParsingError = failOnParsingError
   }
 }
 
@@ -94,11 +97,15 @@ public class AVStockDataFetcher<ModelType: Decodable & AVDateOrderable>: NSObjec
     withFilters modelFilters: [ModelFilter<ModelType>],
     config: AVStockFetcherConfiguration) -> [ModelType]
   {
-    let resultArray = AVStockDataFetcher.convert(from: input)
+    let resultArray = AVStockDataFetcher.flattenResponse(from: input)
 
-    return resultArray.concurrentMap { (input) -> ModelType? in
-      return AVStockDataFetcher<ModelType>.transform(fromRaw: input, withFilters: modelFilters)
-    }
+    return resultArray.concurrentMap(failOnParsingError: config.failOnParsingError, { (input) -> ModelType? in
+      do {
+        return try AVStockDataFetcher<ModelType>.transform(fromRaw: input, withFilters: modelFilters)
+      } catch {
+        return nil
+      }
+    })
   }
   
   internal static func serialParsing(
@@ -109,7 +116,11 @@ public class AVStockDataFetcher<ModelType: Decodable & AVDateOrderable>: NSObjec
     return input.flatMap({ (key, value) in
       var mutableDict = value
       mutableDict["date"] = key
-      return AVStockDataFetcher<ModelType>.transform(fromRaw: mutableDict, withFilters: modelFilters)
+      do {
+        return try AVStockDataFetcher<ModelType>.transform(fromRaw: mutableDict, withFilters: modelFilters)
+      } catch {
+        return nil
+      }
     })
   }
   
@@ -126,7 +137,7 @@ public class AVStockDataFetcher<ModelType: Decodable & AVDateOrderable>: NSObjec
     return true
   }
   
-  private static func convert(from input: [String: [String: String]]) -> [[String: String]]
+  private static func flattenResponse(from input: [String: [String: String]]) -> [[String: String]]
   {
     return input.flatMap { (arg) -> [String: String]? in
       var (date, data) = arg
@@ -136,7 +147,7 @@ public class AVStockDataFetcher<ModelType: Decodable & AVDateOrderable>: NSObjec
   }
   
   private static func transform(fromRaw raw: [String: String],
-                                withFilters modelFilters: [ModelFilter<ModelType>]) -> ModelType?
+                                withFilters modelFilters: [ModelFilter<ModelType>]) throws -> ModelType?
   {
     do {
       let element = try JSONDecoder().decode(ModelType.self, from: JSONSerialization.data(withJSONObject: raw, options: .prettyPrinted))
@@ -182,7 +193,7 @@ extension DispatchQueue {
 // MARK: concurrentMap Array extension
 
 extension Array {
-  internal func concurrentMap<B>(_ transform: @escaping (Element) -> B?) -> [B]
+  internal func concurrentMap<B>(failOnParsingError: Bool, _ transform: @escaping (Element) -> B?) -> [B]
   {
     var result = Array<B?>(repeatElement(nil, count: count))
     let queue = DispatchQueue(label: "serial queue")

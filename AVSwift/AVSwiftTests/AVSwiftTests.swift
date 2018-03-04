@@ -20,11 +20,10 @@ class AVSwiftTests: XCTestCase {
   
   func testBuilders() {
     let testBuilder = AVHistoricalStandardStockPricesBuilder()
-    let beginDate = try! Date.from(month: 1, day: 1, year: 2018)
     testBuilder
       .setOutputSize(.full)
       .setSymbol("MSFT")
-      .withDateFilter(AVDateFilter.after(beginDate))
+      .withDateFilter(AVDateFilter.after(startDate))
       .getResults { results, error in
         XCTAssertTrue(error == nil && results != nil)
       }
