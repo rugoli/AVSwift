@@ -46,7 +46,7 @@ class AVSwiftTests: XCTestCase {
     XCTAssertNotNil(testResults)
     
     self.measure {
-       let _ = AVStockDataFetcher<AVHistoricalStockPriceModel>.serialParsing(
+       let _ = try! SerialParser<AVHistoricalStockPriceModel>.parse(
         input: testResults!,
         withFilters: [],
         config: AVStockFetcherConfiguration())

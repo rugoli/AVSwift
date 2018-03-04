@@ -37,6 +37,8 @@ public struct AVStockFetcherConfiguration {
   }
 }
 
+// MARK: Public
+
 public class AVStockDataFetcher<ModelType: Decodable & AVDateOrderable>: NSObject {
   let url: URL
   let filters: [ModelFilter<ModelType>]
@@ -99,22 +101,6 @@ public class AVStockDataFetcher<ModelType: Decodable & AVDateOrderable>: NSObjec
         completionBlock(nil, error)
       }
     }
-  }
-  
-  internal static func serialParsing(
-    input: UnparsedStockResults,
-    withFilters modelFilters: [ModelFilter<ModelType>],
-    config: AVStockFetcherConfiguration) -> [ModelType]
-  {
-    return input.flatMap({ (key, value) in
-      var mutableDict = value
-      mutableDict["date"] = key
-      do {
-        return try AVStockDataFetcher<ModelType>.transform(fromRaw: mutableDict, withFilters: modelFilters)
-      } catch {
-        return nil
-      }
-    })
   }
   
   // MARK - fileprivate
@@ -213,12 +199,33 @@ internal class ConcurrentParser<Model: Decodable & AVDateOrderable>: StockResult
   internal static func parse(
     input: UnparsedStockResults,
     withFilters modelFilters: [ModelFilter<ModelType>],
-    config: AVStockFetcherConfiguration) throws -> [ModelType?] {
+    config: AVStockFetcherConfiguration) throws -> [ModelType?]
+  {
     let resultArray = AVStockDataFetcher<ModelType>.flattenResponse(from: input)
     
     return resultArray.concurrentMap(failOnParsingError: config.failOnParsingError, { (input) -> ModelType? in
       do {
         return try AVStockDataFetcher<ModelType>.transform(fromRaw: input, withFilters: modelFilters)
+      } catch {
+        return nil
+      }
+    })
+  }
+}
+
+internal class SerialParser<Model: Decodable & AVDateOrderable>: StockResultsParser {
+  typealias ModelType = Model
+  
+  internal static func parse(
+    input: UnparsedStockResults,
+    withFilters modelFilters: [ModelFilter<ModelType>],
+    config: AVStockFetcherConfiguration) throws -> [ModelType?]
+  {
+    return input.flatMap({ (key, value) in
+      var mutableDict = value
+      mutableDict["date"] = key
+      do {
+        return try AVStockDataFetcher<ModelType>.transform(fromRaw: mutableDict, withFilters: modelFilters)
       } catch {
         return nil
       }
