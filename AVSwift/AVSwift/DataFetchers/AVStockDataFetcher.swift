@@ -29,9 +29,9 @@ public struct AVStockFetcherConfiguration {
 
 public class AVStockDataFetcher<ModelType: Decodable & AVDateOrderable>: NSObject {
   let url: URL
-  let filters: [ModelFilter<ModelType>]?
+  let filters: [ModelFilter<ModelType>]
   
-  public init(url: URL, filters: [ModelFilter<ModelType>]? = nil) {
+  public init(url: URL, filters: [ModelFilter<ModelType>] = []) {
     self.url = url
     self.filters = filters
     
@@ -91,7 +91,7 @@ public class AVStockDataFetcher<ModelType: Decodable & AVDateOrderable>: NSObjec
   
   internal static func concurrentParsing(
     input: UnparsedStockResults,
-    withFilters modelFilters: [ModelFilter<ModelType>]?,
+    withFilters modelFilters: [ModelFilter<ModelType>],
     config: AVStockFetcherConfiguration) -> [ModelType]
   {
     let resultArray = AVStockDataFetcher.convert(from: input)
@@ -103,7 +103,7 @@ public class AVStockDataFetcher<ModelType: Decodable & AVDateOrderable>: NSObjec
   
   internal static func serialParsing(
     input: UnparsedStockResults,
-    withFilters modelFilters: [ModelFilter<ModelType>]?,
+    withFilters modelFilters: [ModelFilter<ModelType>],
     config: AVStockFetcherConfiguration) -> [ModelType]
   {
     return input.flatMap({ (key, value) in
@@ -115,8 +115,10 @@ public class AVStockDataFetcher<ModelType: Decodable & AVDateOrderable>: NSObjec
   
   // MARK - Private
   
-  private static func evaluateFilterChain<ModelType>(model: ModelType, forFilters filters: [ModelFilter<ModelType>]?) -> Bool {
-    guard let filters = filters else { return true }
+  private static func evaluateFilterChain<ModelType>(
+    model: ModelType,
+    forFilters filters: [ModelFilter<ModelType>]) -> Bool
+  {
     for filter in filters {
       guard filter(model) else { return false }
     }
@@ -134,7 +136,7 @@ public class AVStockDataFetcher<ModelType: Decodable & AVDateOrderable>: NSObjec
   }
   
   private static func transform(fromRaw raw: [String: String],
-                                withFilters modelFilters: [ModelFilter<ModelType>]?) -> ModelType?
+                                withFilters modelFilters: [ModelFilter<ModelType>]) -> ModelType?
   {
     do {
       let element = try JSONDecoder().decode(ModelType.self, from: JSONSerialization.data(withJSONObject: raw, options: .prettyPrinted))
