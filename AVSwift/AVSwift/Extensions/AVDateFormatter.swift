@@ -8,14 +8,30 @@
 
 import UIKit
 
+fileprivate let sharedDateFormatter = AVDateFormatter.dateFormatter()
+
 public enum AVDateFormatterError: Error {
   case invalidString(String)
 }
 
+internal class AVDateFormatter {
+  
+  fileprivate static func dateFormatter() -> DateFormatter {
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "yyyy-MM-dd"
+    return dateFormatter
+  }
+  
+  fileprivate static var shared: DateFormatter {
+    get {
+      return sharedDateFormatter
+    }
+  }
+}
+
 extension String {
   func toDate() throws -> Date {
-    let formatter = DateFormatter()
-    formatter.dateFormat = "yyyy-MM-dd"
+    let formatter = AVDateFormatter.shared
     guard let date = formatter.date(from: self) else {
       throw AVDateFormatterError.invalidString("Invalid date string: \(self)")
     }

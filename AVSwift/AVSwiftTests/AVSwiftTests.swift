@@ -42,7 +42,30 @@ class AVSwiftTests: XCTestCase {
     self.measure {
        let _ = AVStockDataFetcher<AVHistoricalStockPriceModel>.serialParsing(
         input: testResults!,
-        modelFilters: [(AVHistoricalStockPriceModel) -> Bool]())
+        withFilters: [],
+        config: AVStockFetcherConfiguration())
+    }
+  }
+  
+  func testConcurrent() {
+    let queue = DispatchQueue(label: "synchronous")
+    var testResults: [String: [String: String]]? = nil
+    queue.sync {
+      AVHistoricalStandardStockPricesBuilder()
+        .setOutputSize(.full)
+        .setSymbol("MSFT")
+        .getRawResults { results, error in
+          testResults = results
+      }
+      sleep(5)
+    }
+    XCTAssertNotNil(testResults)
+    
+    self.measure {
+      let _ = AVStockDataFetcher<AVHistoricalStockPriceModel>.concurrentParsing(
+        input: testResults!,
+        withFilters: [],
+        config: AVStockFetcherConfiguration())
     }
   }
 }
