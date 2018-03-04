@@ -19,6 +19,7 @@
 		01732ED2202EDE26002FDB91 /* AVHistoricalTimeSeriesPeriodicity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01732ED1202EDE26002FDB91 /* AVHistoricalTimeSeriesPeriodicity.swift */; };
 		01732ED6202FDF30002FDB91 /* AVHistoricalAdjustedStockPriceModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01732ED5202FDF30002FDB91 /* AVHistoricalAdjustedStockPriceModel.swift */; };
 		01732EDA20301528002FDB91 /* AVModelParsingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01732ED920301528002FDB91 /* AVModelParsingError.swift */; };
+		01A2FE6E204B955500790FDC /* AVPerformanceTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01A2FE6D204B955500790FDC /* AVPerformanceTimer.swift */; };
 		01C4F48120436ED200A2226E /* AVDateFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C4F48020436ED200A2226E /* AVDateFilter.swift */; };
 		01C4F4852043723700A2226E /* AVHistoricalStockPriceQueryProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C4F4842043723700A2226E /* AVHistoricalStockPriceQueryProtocols.swift */; };
 		01C4F4892043C7B500A2226E /* AVDateOrderable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C4F4882043C7B500A2226E /* AVDateOrderable.swift */; };
@@ -58,6 +59,7 @@
 		01732ED1202EDE26002FDB91 /* AVHistoricalTimeSeriesPeriodicity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVHistoricalTimeSeriesPeriodicity.swift; sourceTree = "<group>"; };
 		01732ED5202FDF30002FDB91 /* AVHistoricalAdjustedStockPriceModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVHistoricalAdjustedStockPriceModel.swift; sourceTree = "<group>"; };
 		01732ED920301528002FDB91 /* AVModelParsingError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVModelParsingError.swift; sourceTree = "<group>"; };
+		01A2FE6D204B955500790FDC /* AVPerformanceTimer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVPerformanceTimer.swift; sourceTree = "<group>"; };
 		01C4F48020436ED200A2226E /* AVDateFilter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVDateFilter.swift; sourceTree = "<group>"; };
 		01C4F4842043723700A2226E /* AVHistoricalStockPriceQueryProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVHistoricalStockPriceQueryProtocols.swift; sourceTree = "<group>"; };
 		01C4F4882043C7B500A2226E /* AVDateOrderable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVDateOrderable.swift; sourceTree = "<group>"; };
@@ -172,6 +174,7 @@
 		01F36D78200B166100512ABC /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				01A2FE6D204B955500790FDC /* AVPerformanceTimer.swift */,
 				01732EBD2021A9C2002FDB91 /* AVAPIKeyStore.swift */,
 				01732EB92020569B002FDB91 /* AVKeychainQuery.swift */,
 				01F36D79200B166100512ABC /* AVAPIKeyRegistrar.swift */,
@@ -254,6 +257,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				01732ED2202EDE26002FDB91 /* AVHistoricalTimeSeriesPeriodicity.swift in Sources */,
+				01A2FE6E204B955500790FDC /* AVPerformanceTimer.swift in Sources */,
 				01F36D7C200B166100512ABC /* AVHistoricalStockPricesQueryBuilder.swift in Sources */,
 				0144102A1FFB045600B5675B /* ViewController.swift in Sources */,
 				01732ED6202FDF30002FDB91 /* AVHistoricalAdjustedStockPriceModel.swift in Sources */,

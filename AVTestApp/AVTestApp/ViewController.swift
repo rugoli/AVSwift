@@ -85,7 +85,7 @@ class ViewController: UIViewController {
       .getResults(
         config: AVStockFetcherConfiguration(fetchQueue: .global(qos: .userInitiated), callbackQueue: .main),
         completion: { (stocks, error) in
-          print(stocks as Any)
+//          print(stocks as Any)
           print(error as Any)
         })
   }
