@@ -9,23 +9,35 @@
 import UIKit
 import Foundation
 
+fileprivate protocol StockResultsParser {
+  associatedtype ModelType
+  static func parse(
+    input: UnparsedStockResults,
+    withFilters modelFilters: [ModelFilter<ModelType>],
+    config: AVStockFetcherConfiguration) throws -> [ModelType?]
+}
+
 fileprivate let metadataKey: String = "Metadata"
 public typealias ModelFilter<T> = (T) -> Bool
 public typealias ParsedStockCompletion<M> = ([M]?, Error?) -> Void
 public typealias UnparsedStockResults = [String: [String: String]]
 public typealias UnparsedStockCompletion = (UnparsedStockResults?, Error?) -> Void
 
-
 public struct AVStockFetcherConfiguration {
   let fetchQueue: DispatchQueue
   let callbackQueue: DispatchQueue
+  let failOnParsingError: Bool
   
   public init(fetchQueue: DispatchQueue = DispatchQueue.global(qos: .userInitiated),
-              callbackQueue: DispatchQueue = DispatchQueue.global(qos: .userInitiated)) {
+              callbackQueue: DispatchQueue = DispatchQueue.global(qos: .userInitiated),
+              failOnParsingError: Bool = false) {
     self.fetchQueue = fetchQueue
     self.callbackQueue = callbackQueue
+    self.failOnParsingError = failOnParsingError
   }
 }
+
+// MARK: Public
 
 public class AVStockDataFetcher<ModelType: Decodable & AVDateOrderable>: NSObject {
   let url: URL
@@ -47,10 +59,12 @@ public class AVStockDataFetcher<ModelType: Decodable & AVDateOrderable>: NSObjec
       withFetchConfig: config,
       completionBlock: { results, error in
         if let results = results, error == nil {
-          let parsed = AVStockDataFetcher.concurrentParsing(
+          let parsed = try! ConcurrentParser<ModelType>.parse(
             input: results,
             withFilters: modelFilters,
-            config: config).sorted { model1, model2 -> Bool in
+            config: config)
+            .flatMap { $0 }
+            .sorted { model1, model2 -> Bool in
               return model1.date < model2.date
           }
           config.callbackQueue.executeCallback { completion(parsed, nil) }
@@ -89,28 +103,28 @@ public class AVStockDataFetcher<ModelType: Decodable & AVDateOrderable>: NSObjec
     }
   }
   
-  internal static func concurrentParsing(
-    input: UnparsedStockResults,
-    withFilters modelFilters: [ModelFilter<ModelType>],
-    config: AVStockFetcherConfiguration) -> [ModelType]
+  // MARK - fileprivate
+  
+  fileprivate static func flattenResponse(from input: [String: [String: String]]) -> [[String: String]]
   {
-    let resultArray = AVStockDataFetcher.convert(from: input)
-
-    return resultArray.concurrentMap { (input) -> ModelType? in
-      return AVStockDataFetcher<ModelType>.transform(fromRaw: input, withFilters: modelFilters)
+    return input.flatMap { (arg) -> [String: String]? in
+      var (date, data) = arg
+      data["date"] = date
+      return data
     }
   }
   
-  internal static func serialParsing(
-    input: UnparsedStockResults,
-    withFilters modelFilters: [ModelFilter<ModelType>],
-    config: AVStockFetcherConfiguration) -> [ModelType]
+  fileprivate static func transform(fromRaw raw: [String: String],
+                                    withFilters modelFilters: [ModelFilter<ModelType>]) throws -> ModelType?
   {
-    return input.flatMap({ (key, value) in
-      var mutableDict = value
-      mutableDict["date"] = key
-      return AVStockDataFetcher<ModelType>.transform(fromRaw: mutableDict, withFilters: modelFilters)
-    })
+    do {
+      let element = try JSONDecoder().decode(ModelType.self, from: JSONSerialization.data(withJSONObject: raw, options: .prettyPrinted))
+      
+      guard AVStockDataFetcher<ModelType>.evaluateFilterChain(model: element, forFilters: modelFilters) else { return nil }
+      return element
+    } catch {
+      throw error
+    }
   }
   
   // MARK - Private
@@ -124,28 +138,6 @@ public class AVStockDataFetcher<ModelType: Decodable & AVDateOrderable>: NSObjec
     }
     
     return true
-  }
-  
-  private static func convert(from input: [String: [String: String]]) -> [[String: String]]
-  {
-    return input.flatMap { (arg) -> [String: String]? in
-      var (date, data) = arg
-      data["date"] = date
-      return data
-    }
-  }
-  
-  private static func transform(fromRaw raw: [String: String],
-                                withFilters modelFilters: [ModelFilter<ModelType>]) -> ModelType?
-  {
-    do {
-      let element = try JSONDecoder().decode(ModelType.self, from: JSONSerialization.data(withJSONObject: raw, options: .prettyPrinted))
-  
-      guard AVStockDataFetcher<ModelType>.evaluateFilterChain(model: element, forFilters: modelFilters) else { return nil }
-      return element
-    } catch {
-      return nil
-    }
   }
   
   private static func fetchData(forURL url: URL) throws -> UnparsedStockResults {
@@ -182,19 +174,85 @@ extension DispatchQueue {
 // MARK: concurrentMap Array extension
 
 extension Array {
-  internal func concurrentMap<B>(_ transform: @escaping (Element) -> B?) -> [B]
+  internal func concurrentMap<B>(failOnParsingError: Bool, _ transform: @escaping (Element) throws -> B?) throws -> [B?]
   {
     var result = Array<B?>(repeatElement(nil, count: count))
     let queue = DispatchQueue(label: "serial queue")
+    var parsingError: Error? = nil
     DispatchQueue.concurrentPerform(iterations: count) { idx in
-      let element = self[idx]
-      let transformed = transform(element)
-      
-      queue.sync {
-        result[idx] = transformed
+      do {
+        let element = self[idx]
+        let transformed = try transform(element)
+        
+        queue.sync {
+          result[idx] = transformed
+        }
+      } catch {
+        if failOnParsingError {
+          parsingError = error
+        }
       }
     }
     
-    return result.flatMap { $0 }
+    if failOnParsingError, let error = parsingError {
+      throw error
+    }
+    return result
+  }
+}
+
+// MARK: Model parsers
+
+internal class ConcurrentParser<Model: Decodable & AVDateOrderable>: StockResultsParser {
+  typealias ModelType = Model
+  
+  internal static func parse(
+    input: UnparsedStockResults,
+    withFilters modelFilters: [ModelFilter<ModelType>],
+    config: AVStockFetcherConfiguration) throws -> [ModelType?]
+  {
+    let resultArray = AVStockDataFetcher<ModelType>.flattenResponse(from: input)
+    
+    do {
+      return try resultArray.concurrentMap(failOnParsingError: config.failOnParsingError, { (input) -> ModelType? in
+        do {
+          return try AVStockDataFetcher<ModelType>.transform(fromRaw: input, withFilters: modelFilters)
+        } catch {
+          throw error
+        }
+      })
+    } catch {
+      throw error
+    }
+  }
+}
+
+internal class SerialParser<Model: Decodable & AVDateOrderable>: StockResultsParser {
+  typealias ModelType = Model
+  
+  internal static func parse(
+    input: UnparsedStockResults,
+    withFilters modelFilters: [ModelFilter<ModelType>],
+    config: AVStockFetcherConfiguration) throws -> [ModelType?]
+  {
+    var parsingError: Error? = nil
+    let result: [ModelType?] = input.map ({ (arg) in
+      let (key, value) = arg
+      
+      var mutableDict = value
+      mutableDict["date"] = key
+      
+      do {
+        return try AVStockDataFetcher<ModelType>.transform(fromRaw: mutableDict, withFilters: modelFilters)
+      } catch {
+        parsingError = error
+        return nil
+      }
+    })
+    
+    if config.failOnParsingError, let error = parsingError {
+      throw error
+    }
+    return result
   }
 }

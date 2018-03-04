@@ -20,11 +20,10 @@ class AVSwiftTests: XCTestCase {
   
   func testBuilders() {
     let testBuilder = AVHistoricalStandardStockPricesBuilder()
-    let beginDate = try! Date.from(month: 1, day: 1, year: 2018)
     testBuilder
       .setOutputSize(.full)
       .setSymbol("MSFT")
-      .withDateFilter(AVDateFilter.after(beginDate))
+      .withDateFilter(AVDateFilter.after(startDate))
       .getResults { results, error in
         XCTAssertTrue(error == nil && results != nil)
       }
@@ -47,7 +46,7 @@ class AVSwiftTests: XCTestCase {
     XCTAssertNotNil(testResults)
     
     self.measure {
-       let _ = AVStockDataFetcher<AVHistoricalStockPriceModel>.serialParsing(
+       let _ = try! SerialParser<AVHistoricalStockPriceModel>.parse(
         input: testResults!,
         withFilters: [],
         config: AVStockFetcherConfiguration())
@@ -70,7 +69,7 @@ class AVSwiftTests: XCTestCase {
     XCTAssertNotNil(testResults)
     
     self.measure {
-      let _ = AVStockDataFetcher<AVHistoricalStockPriceModel>.concurrentParsing(
+      let _ = try! ConcurrentParser<AVHistoricalStockPriceModel>.parse(
         input: testResults!,
         withFilters: [],
         config: AVStockFetcherConfiguration())
