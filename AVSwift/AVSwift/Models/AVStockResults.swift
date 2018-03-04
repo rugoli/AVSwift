@@ -9,18 +9,18 @@
 import UIKit
 
 public final class AVStockResultsMetadata {
-  let earliestDate: Date
-  let latestDate: Date
-  let lastRefreshedDate: Date
+  let earliestDate: Date?
+  let latestDate: Date?
+//  let lastRefreshedDate: Date
   let numberOfParsingErrors: Int
   
-  init(earliestDate: Date,
-       latestDate: Date,
-       lastRefreshedDate: Date,
+  init(earliestDate: Date?,
+       latestDate: Date?,
+//       lastRefreshedDate: Date,
        numberOfParsingErrors: Int) {
     self.earliestDate = earliestDate
     self.latestDate = latestDate
-    self.lastRefreshedDate = lastRefreshedDate
+//    self.lastRefreshedDate = lastRefreshedDate
     self.numberOfParsingErrors = numberOfParsingErrors
   }
 }

@@ -17,7 +17,7 @@ protocol AVQueryBuilderProtocol: class {
   
   func getResults(
     config: AVStockFetcherConfiguration,
-    completion: @escaping ([ModelType]?, Error?) -> Void)
+    completion: @escaping ParsedStockCompletion<ModelType>)
   func getRawResults(
     config: AVStockFetcherConfiguration,
     completion: @escaping ([String: [String: String]]?, Error?) -> Void)

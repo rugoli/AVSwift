@@ -19,7 +19,7 @@ fileprivate protocol StockResultsParser {
 
 fileprivate let metadataKey: String = "Metadata"
 public typealias ModelFilter<T> = (T) -> Bool
-public typealias ParsedStockCompletion<M> = ([M]?, Error?) -> Void
+public typealias ParsedStockCompletion<M> = (AVStockResults<M>?, Error?) -> Void
 public typealias UnparsedStockResults = [String: [String: String]]
 public typealias UnparsedStockCompletion = (UnparsedStockResults?, Error?) -> Void
 
@@ -59,15 +59,17 @@ public class AVStockDataFetcher<ModelType: Decodable & AVDateOrderable>: NSObjec
       withFetchConfig: config,
       completionBlock: { results, error in
         if let results = results, error == nil {
-          let parsed = try! ConcurrentParser<ModelType>.parse(
-            input: results,
-            withFilters: modelFilters,
-            config: config)
-            .flatMap { $0 }
-            .sorted { model1, model2 -> Bool in
-              return model1.date < model2.date
+          do {
+            let parsed = try ConcurrentParser<ModelType>.parse(
+              input: results,
+              withFilters: modelFilters,
+              config: config)
+            let stockResults = AVStockDataFetcher.constructStockResults(fromTimeSeries: parsed)
+            config.callbackQueue.executeCallback { completion(stockResults, nil) }
+          } catch {
+            config.callbackQueue.executeCallback { completion(nil, error) }
           }
-          config.callbackQueue.executeCallback { completion(parsed, nil) }
+          
         } else {
           config.callbackQueue.executeCallback { completion(nil, error) }
         }
@@ -128,6 +130,23 @@ public class AVStockDataFetcher<ModelType: Decodable & AVDateOrderable>: NSObjec
   }
   
   // MARK - Private
+  
+  private static func constructStockResults(fromTimeSeries timeSeries: [ModelType?]) -> AVStockResults<ModelType>
+  {
+    let initialCount = timeSeries.count
+    let seriesWithoutErrors = timeSeries
+      .flatMap { $0 }
+      .sorted { model1, model2 -> Bool in
+        return model1.date < model2.date
+      }
+    let finalCount = seriesWithoutErrors.count
+    
+    let metadata = AVStockResultsMetadata(
+      earliestDate: seriesWithoutErrors.first?.date,
+      latestDate: seriesWithoutErrors.last?.date,
+      numberOfParsingErrors: initialCount - finalCount)
+    return AVStockResults<ModelType>(timeSeries: seriesWithoutErrors, metadata: metadata)
+  }
   
   private static func evaluateFilterChain<ModelType>(
     model: ModelType,
