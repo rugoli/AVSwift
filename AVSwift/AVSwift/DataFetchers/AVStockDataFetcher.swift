@@ -123,7 +123,7 @@ public class AVStockDataFetcher<ModelType: Decodable & AVDateOrderable>: NSObjec
       guard AVStockDataFetcher<ModelType>.evaluateFilterChain(model: element, forFilters: modelFilters) else { return nil }
       return element
     } catch {
-      return nil
+      throw error
     }
   }
   
@@ -174,19 +174,29 @@ extension DispatchQueue {
 // MARK: concurrentMap Array extension
 
 extension Array {
-  internal func concurrentMap<B>(failOnParsingError: Bool, _ transform: @escaping (Element) -> B?) -> [B?]
+  internal func concurrentMap<B>(failOnParsingError: Bool, _ transform: @escaping (Element) throws -> B?) throws -> [B?]
   {
     var result = Array<B?>(repeatElement(nil, count: count))
     let queue = DispatchQueue(label: "serial queue")
+    var parsingError: Error? = nil
     DispatchQueue.concurrentPerform(iterations: count) { idx in
-      let element = self[idx]
-      let transformed = transform(element)
-      
-      queue.sync {
-        result[idx] = transformed
+      do {
+        let element = self[idx]
+        let transformed = try transform(element)
+        
+        queue.sync {
+          result[idx] = transformed
+        }
+      } catch {
+        if failOnParsingError {
+          parsingError = error
+        }
       }
     }
     
+    if failOnParsingError, let error = parsingError {
+      throw error
+    }
     return result
   }
 }
@@ -203,13 +213,17 @@ internal class ConcurrentParser<Model: Decodable & AVDateOrderable>: StockResult
   {
     let resultArray = AVStockDataFetcher<ModelType>.flattenResponse(from: input)
     
-    return resultArray.concurrentMap(failOnParsingError: config.failOnParsingError, { (input) -> ModelType? in
-      do {
-        return try AVStockDataFetcher<ModelType>.transform(fromRaw: input, withFilters: modelFilters)
-      } catch {
-        return nil
-      }
-    })
+    do {
+      return try resultArray.concurrentMap(failOnParsingError: config.failOnParsingError, { (input) -> ModelType? in
+        do {
+          return try AVStockDataFetcher<ModelType>.transform(fromRaw: input, withFilters: modelFilters)
+        } catch {
+          throw error
+        }
+      })
+    } catch {
+      throw error
+    }
   }
 }
 
@@ -221,14 +235,24 @@ internal class SerialParser<Model: Decodable & AVDateOrderable>: StockResultsPar
     withFilters modelFilters: [ModelFilter<ModelType>],
     config: AVStockFetcherConfiguration) throws -> [ModelType?]
   {
-    return input.flatMap({ (key, value) in
+    var parsingError: Error? = nil
+    let result: [ModelType?] = input.map ({ (arg) in
+      let (key, value) = arg
+      
       var mutableDict = value
       mutableDict["date"] = key
+      
       do {
         return try AVStockDataFetcher<ModelType>.transform(fromRaw: mutableDict, withFilters: modelFilters)
       } catch {
+        parsingError = error
         return nil
       }
     })
+    
+    if config.failOnParsingError, let error = parsingError {
+      throw error
+    }
+    return result
   }
 }
