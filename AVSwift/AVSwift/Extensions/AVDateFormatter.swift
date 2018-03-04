@@ -10,11 +10,7 @@ import UIKit
 
 fileprivate let sharedDateFormatter = AVDateFormatter.dateFormatter()
 
-public enum AVDateFormatterError: Error {
-  case invalidString(String)
-}
-
-internal class AVDateFormatter {
+fileprivate class AVDateFormatter {
   
   fileprivate static func dateFormatter() -> DateFormatter {
     let dateFormatter = DateFormatter()
@@ -27,6 +23,10 @@ internal class AVDateFormatter {
       return sharedDateFormatter
     }
   }
+}
+
+public enum AVDateFormatterError: Error {
+  case invalidString(String)
 }
 
 extension String {
