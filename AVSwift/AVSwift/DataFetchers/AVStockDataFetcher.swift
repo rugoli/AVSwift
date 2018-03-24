@@ -9,14 +9,6 @@
 import UIKit
 import Foundation
 
-fileprivate protocol StockResultsParser {
-  associatedtype ModelType
-  static func parse(
-    input: UnparsedStockResults,
-    withFilters modelFilters: [ModelFilter<ModelType>],
-    config: AVStockFetcherConfiguration) throws -> [ModelType?]
-}
-
 fileprivate let metadataKey: String = "Metadata"
 public typealias ModelFilter<T> = (T) -> Bool
 public typealias ParsedStockCompletion<M> = (AVStockResults<M>?, Error?) -> Void
@@ -35,6 +27,11 @@ public struct AVStockFetcherConfiguration {
     self.callbackQueue = callbackQueue
     self.failOnParsingError = failOnParsingError
   }
+}
+
+internal enum StockTransformationResult<T: Decodable & AVDateOrderable> {
+  case parseError
+  case result(T)
 }
 
 // MARK: Public
@@ -59,17 +56,16 @@ public class AVStockDataFetcher<ModelType: Decodable & AVDateOrderable>: NSObjec
       withFetchConfig: config,
       completionBlock: { results, error in
         if let results = results, error == nil {
-          do {
-            let parsed = try ConcurrentParser<ModelType>.parse(
-              input: results,
-              withFilters: modelFilters,
-              config: config)
-            let stockResults = AVStockDataFetcher.constructStockResults(fromTimeSeries: parsed)
+          let parsed = ConcurrentParser<ModelType>.parseAndFilter(
+            input: results,
+            withFilters: modelFilters,
+            config: config)
+          if config.failOnParsingError {
+            config.callbackQueue.executeCallback { completion(nil, AVModelError.parsingError(error: "Test")) }
+          } else {
+            let stockResults = AVStockDataFetcher<ModelType>.constructStockResults(fromResults: parsed)
             config.callbackQueue.executeCallback { completion(stockResults, nil) }
-          } catch {
-            config.callbackQueue.executeCallback { completion(nil, error) }
           }
-          
         } else {
           config.callbackQueue.executeCallback { completion(nil, error) }
         }
@@ -116,26 +112,25 @@ public class AVStockDataFetcher<ModelType: Decodable & AVDateOrderable>: NSObjec
     }
   }
   
-  fileprivate static func transform(fromRaw raw: [String: String],
-                                    withFilters modelFilters: [ModelFilter<ModelType>]) throws -> ModelType?
+  internal static func transform(fromRaw raw: [String: String],
+                                 withFilters modelFilters: [ModelFilter<ModelType>]) -> StockTransformationResult<ModelType>?
   {
     do {
       let element = try JSONDecoder().decode(ModelType.self, from: JSONSerialization.data(withJSONObject: raw, options: .prettyPrinted))
       
       guard AVStockDataFetcher<ModelType>.evaluateFilterChain(model: element, forFilters: modelFilters) else { return nil }
-      return element
+      return .result(element)
     } catch {
-      throw error
+      return .parseError
     }
   }
   
   // MARK - Private
   
-  private static func constructStockResults(fromTimeSeries timeSeries: [ModelType?]) -> AVStockResults<ModelType>
+  private static func constructStockResults(fromResults results: [StockTransformationResult<ModelType>]) -> AVStockResults<ModelType>
   {
-    let initialCount = timeSeries.count
-    let seriesWithoutErrors = timeSeries
-      .flatMap { $0 }
+    let initialCount = results.count
+    let seriesWithoutErrors = AVStockDataFetcher<ModelType>.unwrappedStockResults(wrappedResults: results)
       .sorted { model1, model2 -> Bool in
         return model1.date < model2.date
       }
@@ -146,6 +141,17 @@ public class AVStockDataFetcher<ModelType: Decodable & AVDateOrderable>: NSObjec
       latestDate: seriesWithoutErrors.last?.date,
       numberOfParsingErrors: initialCount - finalCount)
     return AVStockResults<ModelType>(timeSeries: seriesWithoutErrors, metadata: metadata)
+  }
+  
+  private static func unwrappedStockResults(wrappedResults: [StockTransformationResult<ModelType>]) -> [ModelType] {
+    return wrappedResults.flatMap { element in
+      switch element {
+      case .result(let result):
+        return result
+      default:
+        return nil
+      }
+    }
   }
   
   private static func evaluateFilterChain<ModelType>(
@@ -193,55 +199,45 @@ extension DispatchQueue {
 // MARK: concurrentMap Array extension
 
 extension Array {
-  internal func concurrentMap<B>(failOnParsingError: Bool, _ transform: @escaping (Element) throws -> B?) throws -> [B?]
+  internal func concurrentMap<B>(transform: @escaping (Element) -> StockTransformationResult<B>?) -> [StockTransformationResult<B>]
   {
-    var result = Array<B?>(repeatElement(nil, count: count))
-    let queue = DispatchQueue(label: "serial queue")
-    var parsingError: Error? = nil
+    var result = Array<StockTransformationResult<B>?>(repeatElement(nil, count: self.count))
+    let queue = DispatchQueue(label: "concurrent queue")
     DispatchQueue.concurrentPerform(iterations: count) { idx in
-      do {
-        let element = self[idx]
-        let transformed = try transform(element)
-        
-        queue.sync {
-          result[idx] = transformed
-        }
-      } catch {
-        if failOnParsingError {
-          parsingError = error
-        }
+      let element = self[idx]
+      let transformed = transform(element)
+      
+      queue.sync {
+        result[idx] = transformed
       }
     }
     
-    if failOnParsingError, let error = parsingError {
-      throw error
-    }
-    return result
+    return result.flatMap { $0 }
   }
 }
 
 // MARK: Model parsers
 
+internal protocol StockResultsParser {
+  associatedtype ModelType: Decodable, AVDateOrderable
+  static func parseAndFilter(
+    input: UnparsedStockResults,
+    withFilters modelFilters: [ModelFilter<ModelType>],
+    config: AVStockFetcherConfiguration) -> [StockTransformationResult<ModelType>]
+}
+
 internal class ConcurrentParser<Model: Decodable & AVDateOrderable>: StockResultsParser {
   typealias ModelType = Model
   
-  internal static func parse(
+  internal static func parseAndFilter(
     input: UnparsedStockResults,
     withFilters modelFilters: [ModelFilter<ModelType>],
-    config: AVStockFetcherConfiguration) throws -> [ModelType?]
+    config: AVStockFetcherConfiguration) -> [StockTransformationResult<ModelType>]
   {
     let resultArray = AVStockDataFetcher<ModelType>.flattenResponse(from: input)
     
-    do {
-      return try resultArray.concurrentMap(failOnParsingError: config.failOnParsingError, { (input) -> ModelType? in
-        do {
-          return try AVStockDataFetcher<ModelType>.transform(fromRaw: input, withFilters: modelFilters)
-        } catch {
-          throw error
-        }
-      })
-    } catch {
-      throw error
+    return resultArray.concurrentMap { input -> StockTransformationResult<ModelType>? in
+      return AVStockDataFetcher<ModelType>.transform(fromRaw: input, withFilters: modelFilters)
     }
   }
 }
@@ -249,29 +245,18 @@ internal class ConcurrentParser<Model: Decodable & AVDateOrderable>: StockResult
 internal class SerialParser<Model: Decodable & AVDateOrderable>: StockResultsParser {
   typealias ModelType = Model
   
-  internal static func parse(
+  internal static func parseAndFilter(
     input: UnparsedStockResults,
     withFilters modelFilters: [ModelFilter<ModelType>],
-    config: AVStockFetcherConfiguration) throws -> [ModelType?]
+    config: AVStockFetcherConfiguration) -> [StockTransformationResult<ModelType>]
   {
-    var parsingError: Error? = nil
-    let result: [ModelType?] = input.map ({ (arg) in
+    return input.flatMap ({ (arg) in
       let (key, value) = arg
       
       var mutableDict = value
       mutableDict["date"] = key
       
-      do {
-        return try AVStockDataFetcher<ModelType>.transform(fromRaw: mutableDict, withFilters: modelFilters)
-      } catch {
-        parsingError = error
-        return nil
-      }
+      return AVStockDataFetcher<ModelType>.transform(fromRaw: mutableDict, withFilters: modelFilters)
     })
-    
-    if config.failOnParsingError, let error = parsingError {
-      throw error
-    }
-    return result
   }
 }
