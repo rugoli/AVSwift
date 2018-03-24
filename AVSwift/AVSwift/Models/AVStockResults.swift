@@ -9,10 +9,10 @@
 import UIKit
 
 public final class AVStockResultsMetadata {
-  let earliestDate: Date?
-  let latestDate: Date?
+  public let earliestDate: Date?
+  public let latestDate: Date?
 //  let lastRefreshedDate: Date
-  let numberOfParsingErrors: Int
+  public let numberOfParsingErrors: Int
   
   init(earliestDate: Date?,
        latestDate: Date?,
@@ -26,8 +26,8 @@ public final class AVStockResultsMetadata {
 }
 
 public final class AVStockResults<Model>{
-  let timeSeries: [Model]
-  let metadata: AVStockResultsMetadata
+  public let timeSeries: [Model]
+  public let metadata: AVStockResultsMetadata
   
   init(timeSeries: [Model],
        metadata: AVStockResultsMetadata) {
