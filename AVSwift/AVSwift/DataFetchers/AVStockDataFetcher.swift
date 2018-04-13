@@ -29,14 +29,29 @@ public struct AVStockFetcherConfiguration {
   }
 }
 
-internal enum StockTransformationResult<T: Decodable & AVDateOrderable> {
+internal enum StockTransformationResult<T: Decodable & AVDateOrderable & Equatable> {
   case parseError
   case result(T)
 }
 
+extension StockTransformationResult: Equatable {
+  static func == (lhs: StockTransformationResult<T>, rhs: StockTransformationResult<T>) -> Bool {
+    switch (lhs, rhs) {
+    case (.parseError, .parseError):
+      return true
+    case (.result(let result1), .result(let result2)):
+      return result1 == result2
+    default:
+      return false
+    }
+  }
+  
+  
+}
+
 // MARK: Public
 
-public class AVStockDataFetcher<ModelType: Decodable & AVDateOrderable>: NSObject {
+public class AVStockDataFetcher<ModelType: Decodable & AVDateOrderable & Equatable>: NSObject {
   let url: URL
   let filters: [ModelFilter<ModelType>]
   
@@ -60,8 +75,12 @@ public class AVStockDataFetcher<ModelType: Decodable & AVDateOrderable>: NSObjec
             input: results,
             withFilters: modelFilters,
             config: config)
-          if config.failOnParsingError {
-            config.callbackQueue.executeCallback { completion(nil, AVModelError.parsingError(error: "Test")) }
+          let numParsingFailures = parsed.filter { input in
+            return input == StockTransformationResult<ModelType>.parseError
+          }.count
+          
+          if config.failOnParsingError && numParsingFailures > 0 {
+            config.callbackQueue.executeCallback { completion(nil, AVModelError.parsingError(error: "\(numParsingFailures) parsing errors were encountered")) }
           } else {
             let stockResults = AVStockDataFetcher<ModelType>.constructStockResults(fromResults: parsed)
             config.callbackQueue.executeCallback { completion(stockResults, nil) }
@@ -219,14 +238,14 @@ extension Array {
 // MARK: Model parsers
 
 internal protocol StockResultsParser {
-  associatedtype ModelType: Decodable, AVDateOrderable
+  associatedtype ModelType: Decodable, AVDateOrderable, Equatable
   static func parseAndFilter(
     input: UnparsedStockResults,
     withFilters modelFilters: [ModelFilter<ModelType>],
     config: AVStockFetcherConfiguration) -> [StockTransformationResult<ModelType>]
 }
 
-internal class ConcurrentParser<Model: Decodable & AVDateOrderable>: StockResultsParser {
+internal class ConcurrentParser<Model: Decodable & AVDateOrderable & Equatable>: StockResultsParser {
   typealias ModelType = Model
   
   internal static func parseAndFilter(
@@ -242,7 +261,7 @@ internal class ConcurrentParser<Model: Decodable & AVDateOrderable>: StockResult
   }
 }
 
-internal class SerialParser<Model: Decodable & AVDateOrderable>: StockResultsParser {
+internal class SerialParser<Model: Decodable & AVDateOrderable & Equatable>: StockResultsParser {
   typealias ModelType = Model
   
   internal static func parseAndFilter(

@@ -63,3 +63,16 @@ extension AVHistoricalStockPriceModel: Decodable {
 }
 
 extension AVHistoricalStockPriceModel: AVDateOrderable {}
+
+extension AVHistoricalStockPriceModel: Equatable {
+  public static func == (lhs: AVHistoricalStockPriceModel, rhs: AVHistoricalStockPriceModel) -> Bool {
+    return lhs.date == rhs.date
+      && lhs.open == rhs.open
+      && lhs.high == rhs.high
+      && lhs.low == rhs.low
+      && lhs.close == rhs.close
+      && lhs.volume == rhs.volume
+  }
+  
+  
+}

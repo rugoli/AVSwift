@@ -9,7 +9,7 @@
 import UIKit
 
 protocol AVQueryBuilderProtocol: class {
-  associatedtype ModelType: Decodable, AVDateOrderable
+  associatedtype ModelType: Decodable, AVDateOrderable, Equatable
   
   func buildURL() -> URL
   
