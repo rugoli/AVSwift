@@ -15,24 +15,25 @@ public class AVHistoricalStockPricesQueryBuilderBase: AVQueryBuilder {
   fileprivate var periodicity: AVHistoricalTimeSeriesPeriodicity = .daily
   fileprivate var isAdjusted: Bool = false
   
-  fileprivate init(withAdjustedPrices: Bool = false) {
+  internal init(withAdjustedPrices: Bool = false) {
     self.isAdjusted = withAdjustedPrices
     
     super.init()
   }
   
-  override public func timeSeriesFunction() -> String {
+  private func timeSeriesFunction() -> String {
     return isAdjusted
       ? periodicity.adjustedFunction()
       : periodicity.standardFunction()
   }
   
-  open func buildURL() -> URL {
+  func buildURL() -> URL {
     let urlComponents = super.buildBaseURL()
     
     let symbolItem = URLQueryItem(name: "symbol", value: symbol)
+    let timeSeriesItem = URLQueryItem(name: "function", value: timeSeriesFunction())
     
-    urlComponents.queryItems?.append(symbolItem)
+    urlComponents.queryItems?.append(contentsOf: [symbolItem, timeSeriesItem])
     return urlComponents.url!
   }
   
