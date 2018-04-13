@@ -15,13 +15,16 @@ public enum AVOutputSize: String {
 
 public protocol AVQueryBuilderBase {
   func setOutputSize(_ outputSize: AVOutputSize) -> Self
+  func setConfiguration(_ config: AVStockFetcherConfiguration) -> Self
 }
 
 public class AVQueryBuilder: NSObject {
   open var outputSize: AVOutputSize
+  open var config: AVStockFetcherConfiguration
   
   override init() {
     outputSize = .compact
+    config = AVStockFetcherConfiguration()
     
     super.init()
   }
@@ -44,4 +47,10 @@ public class AVQueryBuilder: NSObject {
     self.outputSize = outputSize
     return self
   }
+  
+  public func setConfiguration(_ config: AVStockFetcherConfiguration) -> Self {
+    self.config = config
+    return self
+  }
+  
 }

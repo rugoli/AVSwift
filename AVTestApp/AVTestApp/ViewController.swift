@@ -84,16 +84,16 @@ class ViewController: UIViewController {
     AVHistoricalStandardStockPricesBuilder()
       .setSymbol("MSFT")
       .setPeriodicity(selectedPeriodicity)
+      .setConfiguration(
+        AVStockFetcherConfiguration(
+        fetchQueue: .global(qos: .userInitiated),
+        callbackQueue: .main,
+        failOnParsingError: true))
       .withDateFilter(AVDateFilter.between(beginDate, endDate))
-      .getResults(
-        config: AVStockFetcherConfiguration(
-          fetchQueue: .global(qos: .userInitiated),
-          callbackQueue: .main,
-          failOnParsingError: true),
-        completion: { stocks, error in
+      .getResults { stocks, error in
           print(stocks?.timeSeries as Any)
           print(error as Any)
-        })
+    }
   }
 }
 

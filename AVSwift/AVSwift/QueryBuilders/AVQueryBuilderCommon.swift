@@ -14,13 +14,10 @@ protocol AVQueryBuilderProtocol: class {
   func buildURL() -> URL
   
   var modelFilters: [ModelFilter<ModelType>] { get }
+  var config: AVStockFetcherConfiguration { get }
   
-  func getResults(
-    config: AVStockFetcherConfiguration,
-    completion: @escaping ParsedStockCompletion<ModelType>)
-  func getRawResults(
-    config: AVStockFetcherConfiguration,
-    completion: @escaping UnparsedStockCompletion)
+  func getResults(_ completion: @escaping ParsedStockCompletion<ModelType>)
+  func getRawResults(_ completion: @escaping UnparsedStockCompletion)
 }
 
 extension AVQueryBuilderProtocol {
@@ -30,16 +27,12 @@ extension AVQueryBuilderProtocol {
   }
   
   // convenience methods to go straight from the query builder to the results
-  public func getResults(
-    config: AVStockFetcherConfiguration = AVStockFetcherConfiguration(),
-    completion: @escaping ParsedStockCompletion<ModelType>)
+  public func getResults(_ completion: @escaping ParsedStockCompletion<ModelType>)
   {
     self.build(withFilters: self.modelFilters).getResults(config: config, completion: completion)
   }
   
-  public func getRawResults(
-    config: AVStockFetcherConfiguration = AVStockFetcherConfiguration(),
-    completion: @escaping UnparsedStockCompletion)
+  public func getRawResults(_ completion: @escaping UnparsedStockCompletion)
   {
     self.build(withFilters: self.modelFilters).getRawResults(config: config, completion: completion)
   }
