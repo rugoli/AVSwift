@@ -105,7 +105,7 @@ public class AVStockDataFetcher<ModelType: Decodable & AVDateOrderable>: NSObjec
   
   fileprivate static func flattenResponse(from input: [String: [String: String]]) -> [[String: String]]
   {
-    return input.flatMap { (arg) -> [String: String]? in
+    return input.compactMap { (arg) -> [String: String]? in
       var (date, data) = arg
       data["date"] = date
       return data
@@ -144,7 +144,7 @@ public class AVStockDataFetcher<ModelType: Decodable & AVDateOrderable>: NSObjec
   }
   
   private static func unwrappedStockResults(wrappedResults: [StockTransformationResult<ModelType>]) -> [ModelType] {
-    return wrappedResults.flatMap { element in
+    return wrappedResults.compactMap { element in
       switch element {
       case .result(let result):
         return result
@@ -212,7 +212,7 @@ extension Array {
       }
     }
     
-    return result.flatMap { $0 }
+    return result.compactMap { $0 }
   }
 }
 
@@ -250,7 +250,7 @@ internal class SerialParser<Model: Decodable & AVDateOrderable>: StockResultsPar
     withFilters modelFilters: [ModelFilter<ModelType>],
     config: AVStockFetcherConfiguration) -> [StockTransformationResult<ModelType>]
   {
-    return input.flatMap ({ (arg) in
+    return input.compactMap ({ (arg) in
       let (key, value) = arg
       
       var mutableDict = value

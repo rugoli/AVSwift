@@ -25,7 +25,10 @@ class ViewController: UIViewController {
     periodicityPickerView = UIPickerView()
     
     super.init(coder: aDecoder)
-    AVAPIKeyStore.sharedInstance.setAPIKey(apiKey: registrar.getAPIKey()!)
+    if let key = registrar.getAPIKey() {
+      AVAPIKeyStore.sharedInstance.setAPIKey(apiKey: key)
+    }
+    
   }
   
   override func loadView() {
@@ -69,7 +72,7 @@ class ViewController: UIViewController {
       .setPeriodicity(selectedPeriodicity)
       .withDateFilter(AVDateFilter.after(beginDate))
       .getResults { (stocks, error) in
-        print(stocks as Any)
+        print(stocks?.timeSeries as Any)
         print(error as Any)
     }
   }
@@ -83,9 +86,12 @@ class ViewController: UIViewController {
       .setPeriodicity(selectedPeriodicity)
       .withDateFilter(AVDateFilter.between(beginDate, endDate))
       .getResults(
-        config: AVStockFetcherConfiguration(fetchQueue: .global(qos: .userInitiated), callbackQueue: .main),
-        completion: { (stocks, error) in
-          print(stocks as Any)
+        config: AVStockFetcherConfiguration(
+          fetchQueue: .global(qos: .userInitiated),
+          callbackQueue: .main,
+          failOnParsingError: true),
+        completion: { stocks, error in
+          print(stocks?.timeSeries as Any)
           print(error as Any)
         })
   }
