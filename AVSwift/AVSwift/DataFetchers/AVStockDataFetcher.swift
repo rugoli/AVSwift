@@ -167,7 +167,7 @@ public class AVStockDataFetcher<ModelType: Decodable & AVDateOrderable & Equatab
       switch element {
       case .result(let result):
         return result
-      default:
+      case .parseError:
         return nil
       }
     }

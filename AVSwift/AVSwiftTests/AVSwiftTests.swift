@@ -46,7 +46,7 @@ class AVSwiftTests: XCTestCase {
     XCTAssertNotNil(testResults)
     
     self.measure {
-       let _ = try! SerialParser<AVHistoricalStockPriceModel>.parseAndFilter(
+       let _ = SerialParser<AVHistoricalStockPriceModel>.parseAndFilter(
         input: testResults!,
         withFilters: [],
         config: AVStockFetcherConfiguration())
@@ -69,7 +69,7 @@ class AVSwiftTests: XCTestCase {
     XCTAssertNotNil(testResults)
     
     self.measure {
-      let _ = try! ConcurrentParser<AVHistoricalStockPriceModel>.parseAndFilter(
+      let _ = ConcurrentParser<AVHistoricalStockPriceModel>.parseAndFilter(
         input: testResults!,
         withFilters: [],
         config: AVStockFetcherConfiguration())
